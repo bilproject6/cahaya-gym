@@ -7,6 +7,8 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Lock, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default function UpdatePasswordPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
