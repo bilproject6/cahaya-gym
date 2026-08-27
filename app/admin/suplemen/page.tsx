@@ -5,8 +5,9 @@ import { formatRupiah, formatDate } from "@/lib/utils";
 import {
   Package, Plus, AlertTriangle, Minus, Loader2, X, TrendingUp,
   TrendingDown, Edit3, History, ChevronRight, CheckCircle,
-  AlertCircle, RotateCcw, ShoppingCart,
+  AlertCircle, RotateCcw, ShoppingCart, FileDown,
 } from "lucide-react";
+import { exportToExcel, fmtRp } from "@/lib/export";
 
 // ── Types ──────────────────────────────────────────────────────────
 type Supplement = {

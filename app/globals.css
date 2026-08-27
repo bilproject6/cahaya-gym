@@ -644,3 +644,125 @@ body {
   border-radius: inherit;
   opacity: 0.4;
 }
+
+/* ============ RESPONSIVE TABLE ============ */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+}
+
+.table-wrapper table {
+  min-width: 600px;
+}
+
+/* ============ MOBILE RESPONSIVE ============ */
+@media (max-width: 768px) {
+  /* Admin page header: stack vertically */
+  .page-header-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .page-header-actions > * {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Stat grids: 2 columns on mobile */
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Modal full-width on mobile */
+  .modal {
+    padding: 1.25rem;
+    border-radius: 16px;
+    max-height: 95vh;
+  }
+
+  /* Touch-friendly min height for buttons */
+  .btn-primary,
+  .btn-ghost,
+  .btn-danger {
+    min-height: 44px;
+  }
+
+  /* Input touch-friendly */
+  .input,
+  select.input {
+    min-height: 44px;
+    font-size: 16px; /* prevent iOS zoom */
+  }
+
+  /* Sidebar overlay fix */
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 39;
+    backdrop-filter: blur(2px);
+  }
+
+  /* Card grids on mobile: 1 column */
+  .card-grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Chart containers full width */
+  .chart-container {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Hide non-essential table columns on mobile */
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small screens */
+  .stat-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+
+/* ============ LIGHT MODE ============ */
+html.light {
+  --color-dark-900: #ffffff;
+  --color-dark-800: #f3f4f8;
+  --color-dark-700: #e8eaf0;
+  --color-dark-600: #ffffff;
+  --color-dark-500: #edf0f7;
+  --color-dark-400: #e2e6f0;
+  --color-dark-300: #d0d6e8;
+  --color-dark-200: #bbc4d9;
+  --color-text-primary: #0f1117;
+  --color-text-secondary: #3d4a65;
+  --color-text-muted: #7a8399;
+  --color-border-default: #d4d9e8;
+  --color-border-subtle: #e8eaf0;
+}
+
+html.light body {
+  background-color: var(--color-dark-800);
+  color: var(--color-text-primary);
+}
+
+html.light .modal {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+html.light .modal-overlay {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+html.light .sidebar-nav-item:hover {
+  background: rgba(255, 107, 44, 0.08);
+}

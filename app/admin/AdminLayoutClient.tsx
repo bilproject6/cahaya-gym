@@ -6,9 +6,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
-  LayoutDashboard, Users, UserCheck, Dumbbell,
+  LayoutDashboard, Users, UserCheck,
   TrendingUp, LogOut, Menu, X, ShieldCheck, Package, Activity,
+  Sun, Moon,
 } from "lucide-react";
+import { useTheme } from "@/lib/theme-context";
 
 interface AdminLayoutClientProps {
   children: React.ReactNode;
@@ -50,6 +52,7 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const supabase = createClient();
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -112,8 +115,20 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
         ))}
       </nav>
 
-      {/* Logout */}
+      {/* Logout + Theme toggle */}
       <div className="p-4" style={{ borderTop: "1px solid var(--color-border-subtle)" }}>
+        <button
+          onClick={toggleTheme}
+          className="sidebar-nav-item w-full mb-2"
+          title={theme === "dark" ? "Aktifkan Light Mode" : "Aktifkan Dark Mode"}
+        >
+          {theme === "dark"
+            ? <Sun className="w-4 h-4" style={{ color: "var(--color-brand-gold)" }} />
+            : <Moon className="w-4 h-4" style={{ color: "var(--color-brand-orange)" }} />}
+          <span style={{ color: "var(--color-text-secondary)" }}>
+            {theme === "dark" ? "Light Mode" : "Dark Mode"}
+          </span>
+        </button>
         <button
           onClick={handleLogout}
           className="sidebar-nav-item w-full"
@@ -161,9 +176,14 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
             <Menu className="w-5 h-5" />
           </button>
           <span className="font-bebas text-lg" style={{ color: "var(--color-text-primary)" }}>ADMIN PANEL</span>
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-            style={{ background: "var(--color-brand-orange)", color: "white" }}>
-            {profile.nama.charAt(0).toUpperCase()}
+          <div className="flex items-center gap-2">
+            <button onClick={toggleTheme} className="p-1.5 rounded-lg" style={{ color: "var(--color-text-muted)" }}>
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+              style={{ background: "var(--color-brand-orange)", color: "white" }}>
+              {profile.nama.charAt(0).toUpperCase()}
+            </div>
           </div>
         </header>
 

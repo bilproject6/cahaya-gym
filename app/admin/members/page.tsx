@@ -6,7 +6,9 @@ import {
   Users, Search, CheckCircle, XCircle, Clock,
   AlertTriangle, Plus, Trash2, Loader2, X, UserCheck,
   CreditCard, Edit2, Calendar, Phone, ShieldAlert, UserPlus, Banknote,
+  FileDown,
 } from "lucide-react";
+import { exportToExcel, fmtDate } from "@/lib/export";
 
 type Member = {
   id: string;
@@ -478,6 +480,20 @@ export default function AdminMembersPage() {
   const nonAktifCount = members.filter(m => m.status === "non-aktif" || !m.profiles?.is_verified).length;
   const pendingCount = pendingProfiles.length;
 
+  const handleExport = () => {
+    const rows = members.map((m) => ({
+      "Nama": m.profiles?.nama || "-",
+      "No HP": m.profiles?.no_hp || "-",
+      "Status": m.status,
+      "Terverifikasi": m.profiles?.is_verified ? "Ya" : "Tidak",
+      "Tanggal Daftar": fmtDate(m.tanggal_daftar),
+      "Jatuh Tempo": fmtDate(m.tanggal_jatuh_tempo),
+      "Sisa Hari": daysRemaining(m.tanggal_jatuh_tempo),
+      "Catatan": m.catatan || "-",
+    }));
+    exportToExcel(rows, "Data Member", `cahaya-gym-member-${new Date().toISOString().slice(0, 10)}`);
+  };
+
   return (
     <div className="max-w-5xl mx-auto">
       {/* Toast */}
@@ -510,9 +526,14 @@ export default function AdminMembersPage() {
             <span style={{ color: "var(--color-text-muted)" }}>{members.length} total</span>
           </div>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="btn-primary">
-          <Plus className="w-4 h-4" /> Tambah Member
-        </button>
+        <div className="flex items-center gap-2 flex-wrap page-header-actions">
+          <button onClick={handleExport} className="btn-ghost" title="Export ke Excel">
+            <FileDown className="w-4 h-4" /> Export Excel
+          </button>
+          <button onClick={() => setShowAddModal(true)} className="btn-primary">
+            <Plus className="w-4 h-4" /> Tambah Member
+          </button>
+        </div>
       </div>
 
       {/* Search + Filter */}

@@ -5,8 +5,9 @@ import { formatRupiah, formatDate } from "@/lib/utils";
 import {
   TrendingUp, TrendingDown, Plus, Loader2, X, AlertCircle,
   DollarSign, ArrowUpCircle, ArrowDownCircle, ChevronLeft, ChevronRight,
-  Edit2, Trash2, CheckCircle,
+  Edit2, Trash2, CheckCircle, FileDown,
 } from "lucide-react";
+import { exportMultiSheet, fmtDate, fmtRp } from "@/lib/export";
 
 type Expense = {
   id: string;
@@ -143,6 +144,33 @@ export default function AdminKeuanganPage() {
               <ChevronRight className="w-4 h-4" style={{ color: "var(--color-text-secondary)" }} />
             </button>
           </div>
+          <button
+            onClick={() => {
+              const sheets = [
+                {
+                  name: "Pemasukan",
+                  data: (data?.payments ?? []).map((p) => ({
+                    "Tanggal": fmtDate(p.tanggal_bayar),
+                    "Jumlah": fmtRp(p.jumlah),
+                    "Catatan": p.catatan || "-",
+                  })),
+                },
+                {
+                  name: "Pengeluaran",
+                  data: (data?.expenses ?? []).map((e) => ({
+                    "Tanggal": fmtDate(e.tanggal),
+                    "Kategori": e.kategori,
+                    "Jumlah": fmtRp(e.jumlah),
+                    "Catatan": e.catatan || "-",
+                  })),
+                },
+              ];
+              exportMultiSheet(sheets, `cahaya-gym-keuangan-${monthLabel.replace(" ", "-")}`);
+            }}
+            className="btn-ghost"
+          >
+            <FileDown className="w-4 h-4" /> Export Excel
+          </button>
           <button onClick={() => setShowExpenseModal(true)} className="btn-primary" id="add-expense-btn">
             <Plus className="w-4 h-4" /> Catat Pengeluaran
           </button>

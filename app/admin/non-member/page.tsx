@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { formatDate, formatRupiah } from "@/lib/utils";
-import { UserCheck, Plus, Loader2, X, AlertCircle, Trash2, CheckCircle } from "lucide-react";
+import { UserCheck, Plus, Loader2, X, AlertCircle, Trash2, CheckCircle, FileDown } from "lucide-react";
+import { exportToExcel, fmtDate, fmtRp } from "@/lib/export";
 
 type Visitor = {
   id: string;
@@ -161,13 +162,29 @@ export default function AdminNonMemberPage() {
         />
       )}
 
-      <div className="mb-8">
-        <h1 className="font-bebas text-4xl mb-1" style={{ color: "var(--color-text-primary)" }}>
-          NON-MEMBER HARIAN
-        </h1>
-        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Catat kunjungan pengunjung harian yang tidak berlangganan
-        </p>
+      <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
+        <div>
+          <h1 className="font-bebas text-4xl mb-1" style={{ color: "var(--color-text-primary)" }}>
+            NON-MEMBER HARIAN
+          </h1>
+          <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+            Catat kunjungan pengunjung harian yang tidak berlangganan
+          </p>
+        </div>
+        <button
+          onClick={() => {
+            const rows = visitors.map((v) => ({
+              "Nama": v.nama || "Anonim",
+              "Tanggal": fmtDate(v.tanggal),
+              "Jumlah Bayar": fmtRp(v.jumlah_bayar),
+              "Catatan": v.catatan || "-",
+            }));
+            exportToExcel(rows, "Non-Member Harian", `cahaya-gym-nonmember-${new Date().toISOString().slice(0, 10)}`);
+          }}
+          className="btn-ghost"
+        >
+          <FileDown className="w-4 h-4" /> Export Excel
+        </button>
       </div>
 
       {/* Today summary */}
