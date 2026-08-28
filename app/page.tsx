@@ -76,11 +76,28 @@ function AnimatedCounter({
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [memberCount, setMemberCount] = useState<number | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Fetch jumlah member aktif secara real-time
+  useEffect(() => {
+    fetch("/api/admin/members")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.members) {
+          const aktif = data.members.filter(
+            (m: { status: string; profiles?: { is_verified?: boolean } }) =>
+              m.status === "aktif" && m.profiles?.is_verified
+          ).length;
+          setMemberCount(aktif);
+        }
+      })
+      .catch(() => {}); // fallback diam-diam
   }, []);
 
   const tutorials = [
@@ -182,13 +199,13 @@ export default function LandingPage() {
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
-                className="text-sm font-medium transition-colors duration-200 hover:opacity-100"
-                style={{ color: "var(--color-text-secondary)" }}
+                className="text-sm font-medium transition-colors duration-200"
+                style={{ color: "rgba(255,255,255,0.85)" }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.style.color = "var(--color-text-primary)")
+                  (e.currentTarget.style.color = "#ffffff")
                 }
                 onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "var(--color-text-secondary)")
+                  (e.currentTarget.style.color = "rgba(255,255,255,0.85)")
                 }
               >
                 {item}
@@ -300,8 +317,8 @@ export default function LandingPage() {
                 <Zap className="w-3 h-3" /> Fitness Center
               </span>
               <span
-                className="text-xs"
-                style={{ color: "var(--color-text-muted)" }}
+                className="text-xs font-medium"
+                style={{ color: "rgba(255,255,255,0.80)" }}
               >
                 Buka setiap hari
               </span>
@@ -325,7 +342,7 @@ export default function LandingPage() {
 
             <p
               className="text-lg mb-8 max-w-xl leading-relaxed animate-fade-in-up delay-200"
-              style={{ color: "var(--color-text-secondary)" }}
+              style={{ color: "rgba(255,255,255,0.82)" }}
             >
               Cahaya Gym hadir untuk menemanimu dalam setiap langkah perjalanan
               fitness. Fasilitas lengkap, harga terjangkau, komunitas yang
@@ -349,31 +366,46 @@ export default function LandingPage() {
               </a>
             </div>
 
-            {/* Stats */}
             <div
               className="grid grid-cols-3 gap-8 pt-8 border-t animate-fade-in-up delay-400"
-              style={{ borderColor: "var(--color-border-default)" }}
+              style={{ borderColor: "rgba(255,255,255,0.15)" }}
             >
-              {[
-                { value: 200, suffix: "+", label: "Member Aktif" },
-                { value: 5, suffix: " Tahun", label: "Pengalaman" },
-                { value: 50, suffix: "+", label: "Alat Gym" },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <div
-                    className="font-bebas text-3xl md:text-4xl"
-                    style={{ color: "var(--color-brand-orange)" }}
-                  >
-                    <AnimatedCounter end={stat.value} suffix={stat.suffix} />
-                  </div>
-                  <div
-                    className="text-sm mt-1"
-                    style={{ color: "var(--color-text-muted)" }}
-                  >
-                    {stat.label}
-                  </div>
+              {/* Member Aktif — real-time */}
+              <div>
+                <div
+                  className="font-bebas text-3xl md:text-4xl"
+                  style={{ color: "var(--color-brand-orange)" }}
+                >
+                  {memberCount !== null ? `${memberCount}+` : "..."}
                 </div>
-              ))}
+                <div className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.75)" }}>
+                  Member Aktif
+                </div>
+              </div>
+              {/* Pengalaman — 10+ Tahun */}
+              <div>
+                <div
+                  className="font-bebas text-3xl md:text-4xl"
+                  style={{ color: "var(--color-brand-orange)" }}
+                >
+                  <AnimatedCounter end={10} suffix="+ Tahun" />
+                </div>
+                <div className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.75)" }}>
+                  Pengalaman
+                </div>
+              </div>
+              {/* Alat Gym — 20+ */}
+              <div>
+                <div
+                  className="font-bebas text-3xl md:text-4xl"
+                  style={{ color: "var(--color-brand-orange)" }}
+                >
+                  <AnimatedCounter end={20} suffix="+" />
+                </div>
+                <div className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.75)" }}>
+                  Alat Gym
+                </div>
+              </div>
             </div>
           </div>
         </div>
