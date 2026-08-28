@@ -592,8 +592,9 @@ export default function AdminMembersPage() {
                 style={{ padding: "1rem 1.25rem", borderLeft: `3px solid ${borderColor}`, transition: "all 0.2s" }}
                 onClick={() => setEditMember(member)}
               >
-                <div className="flex items-center justify-between gap-4 flex-wrap">
-                  <div className="flex-1 min-w-0">
+                <div className="flex flex-col gap-3">
+                  {/* Member Info */}
+                  <div className="min-w-0">
                     <div className="flex items-center gap-3 mb-1">
                       <div
                         className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
@@ -601,12 +602,12 @@ export default function AdminMembersPage() {
                       >
                         {member.profiles?.nama?.charAt(0).toUpperCase() ?? "?"}
                       </div>
-                      <span className="font-semibold truncate" style={{ color: "var(--color-text-primary)" }}>
+                      <span className="font-semibold" style={{ color: "var(--color-text-primary)", wordBreak: "break-word" }}>
                         {member.profiles?.nama || "—"}
                       </span>
                       <StatusBadge member={member} />
                     </div>
-                    <div className="flex items-center gap-4 text-xs ml-11" style={{ color: "var(--color-text-muted)" }}>
+                    <div className="flex items-center gap-4 text-xs ml-11 flex-wrap" style={{ color: "var(--color-text-muted)" }}>
                       {member.profiles?.no_hp && (
                         <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{member.profiles.no_hp}</span>
                       )}
@@ -617,8 +618,8 @@ export default function AdminMembersPage() {
                     </div>
                   </div>
 
-                  {/* Actions */}
-                  <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                  {/* Actions — separate row */}
+                  <div className="flex items-center gap-2 ml-11" onClick={(e) => e.stopPropagation()}>
                     {isNonAktif ? (
                       <button
                         onClick={() => openVerify(member)}

@@ -184,7 +184,7 @@ export default function AdminKeuanganPage() {
       ) : (
         <>
           {/* Summary Cards */}
-          <div className="grid grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             <div className="card-stat">
               <div className="flex items-center gap-2 mb-2">
                 <ArrowUpCircle className="w-4 h-4" style={{ color: "var(--color-status-active)" }} />

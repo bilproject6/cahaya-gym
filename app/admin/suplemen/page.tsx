@@ -228,7 +228,24 @@ export default function AdminSuplemenPage() {
           <h1 className="font-bebas text-4xl mb-1" style={{ color: "var(--color-text-primary)" }}>SUPLEMEN</h1>
           <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Kelola stok dan penjualan suplemen gym</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap page-header-actions">
+          <button
+            onClick={() => {
+              const rows = suplemen.map((s) => ({
+                "Nama Produk": s.nama_produk,
+                "Harga Beli": fmtRp(s.harga_beli),
+                "Harga Jual": fmtRp(s.harga_jual),
+                "Margin": fmtRp(s.harga_jual - s.harga_beli),
+                "Stok": s.stok,
+                "Satuan": s.satuan,
+                "Stok Minimum": s.stok_minimum,
+              }));
+              exportToExcel(rows, "Data Suplemen", `cahaya-gym-suplemen-${new Date().toISOString().slice(0, 10)}`);
+            }}
+            className="btn-ghost"
+          >
+            <FileDown className="w-4 h-4" /> Export Excel
+          </button>
           <button
             onClick={() => { setShowInactive(!showInactive); if (!showInactive) fetchInactive(); }}
             className="btn-ghost"

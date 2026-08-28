@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Dumbbell, AlertCircle, Loader2, AtSign } from "lucide-react";
+import { Eye, EyeOff, Dumbbell, AlertCircle, Loader2, AtSign, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/lib/theme-context";
 
 export default function LoginPage() {
   const [identifier, setIdentifier] = useState("");
@@ -13,6 +14,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,6 +53,16 @@ export default function LoginPage() {
       className="min-h-screen flex items-center justify-center px-4 py-12"
       style={{ background: "var(--color-dark-800)" }}
     >
+      {/* Theme Toggle */}
+      <button
+        onClick={toggleTheme}
+        className="fixed top-4 right-4 p-2 rounded-xl z-50"
+        style={{ background: "var(--color-dark-600)", border: "1px solid var(--color-border-default)", color: "var(--color-text-muted)" }}
+        title={theme === "dark" ? "Light Mode" : "Dark Mode"}
+      >
+        {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+      </button>
+
       {/* Background decorations */}
       <div
         className="fixed top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-5 pointer-events-none"
