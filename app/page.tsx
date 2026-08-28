@@ -261,7 +261,7 @@ export default function LandingPage() {
             alt="Cahaya Gym interior"
             fill
             sizes="100vw"
-            className="object-cover opacity-30"
+            className="object-cover opacity-40"
             priority
           />
           {/* Overlays */}
@@ -269,7 +269,7 @@ export default function LandingPage() {
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(135deg, rgba(6,8,16,0.95) 0%, rgba(11,15,26,0.8) 50%, rgba(6,8,16,0.9) 100%)",
+                "linear-gradient(135deg, rgba(6,8,16,0.88) 0%, rgba(11,15,26,0.65) 50%, rgba(6,8,16,0.82) 100%)",
             }}
           />
           {/* Orange glow bottom */}
@@ -277,7 +277,7 @@ export default function LandingPage() {
             className="absolute bottom-0 left-0 right-0 h-64"
             style={{
               background:
-                "linear-gradient(to top, rgba(255,107,44,0.06), transparent)",
+                "linear-gradient(to top, rgba(255,107,44,0.08), transparent)",
             }}
           />
         </div>
