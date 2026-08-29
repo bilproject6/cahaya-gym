@@ -144,6 +144,7 @@ export default function AdminSuplemenPage() {
   const [loading, setLoading] = useState(true);
   const [loadingInactive, setLoadingInactive] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Modal states
   const [showAddModal, setShowAddModal] = useState(false);
@@ -206,9 +207,54 @@ export default function AdminSuplemenPage() {
     }
   };
 
+  const handleDeactivate = async (s: Supplement) => {
+    if (!confirm(`Nonaktifkan "${s.nama_produk}"? Produk akan disembunyikan dari daftar aktif.`)) return;
+    try {
+      const res = await fetch("/api/admin/suplemen", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: s.id }),
+      });
+      if (res.ok) {
+        showToast(`"${s.nama_produk}" berhasil dinonaktifkan.`);
+        fetchSuplemen();
+        if (showInactive) fetchInactive();
+      } else {
+        const json = await res.json();
+        showToast(json.error ?? "Gagal menonaktifkan.", "error");
+      }
+    } catch {
+      showToast("Terjadi kesalahan jaringan.", "error");
+    }
+  };
+
+  const handleHardDelete = async (s: Supplement) => {
+    if (!confirm(`HAPUS PERMANEN "${s.nama_produk}"?\n\nData produk akan dihapus secara permanen. Riwayat transaksi tetap tersimpan.\n\nLanjutkan?`)) return;
+    try {
+      const res = await fetch("/api/admin/suplemen", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: s.id, permanent: true }),
+      });
+      if (res.ok) {
+        showToast(`"${s.nama_produk}" dihapus permanen.`);
+        fetchInactive();
+      } else {
+        const json = await res.json();
+        showToast(json.error ?? "Gagal menghapus.", "error");
+      }
+    } catch {
+      showToast("Terjadi kesalahan jaringan.", "error");
+    }
+  };
+
   useEffect(() => { fetchSuplemen(); }, [fetchSuplemen]);
 
-  const lowStock = suplemen.filter((s) => s.stok <= s.stok_minimum);
+  const outOfStock = suplemen.filter((s) => s.stok === 0);
+  const lowStock = suplemen.filter((s) => s.stok > 0 && s.stok <= s.stok_minimum);
+  const filteredSuplemen = suplemen.filter((s) =>
+    s.nama_produk.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -223,7 +269,7 @@ export default function AdminSuplemenPage() {
       )}
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
+      <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
         <div>
           <h1 className="font-bebas text-4xl mb-1" style={{ color: "var(--color-text-primary)" }}>SUPLEMEN</h1>
           <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Kelola stok dan penjualan suplemen gym</p>
@@ -260,13 +306,35 @@ export default function AdminSuplemenPage() {
         </div>
       </div>
 
-      {/* Low stock alert */}
+      {/* Search bar */}
+      <div className="mb-5">
+        <input
+          type="text"
+          className="input"
+          placeholder="🔍 Cari nama suplemen..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ maxWidth: "360px" }}
+        />
+      </div>
+
+      {/* Stock alerts — stok habis merah, stok tipis kuning */}
+      {outOfStock.length > 0 && (
+        <div className="flex items-center gap-3 p-4 rounded-xl mb-3 text-sm"
+          style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#ef4444" }} />
+          <span style={{ color: "var(--color-text-secondary)" }}>
+            <strong style={{ color: "#ef4444" }}>{outOfStock.length} produk STOK HABIS!</strong>{" "}
+            {outOfStock.map(s => s.nama_produk).join(", ")}
+          </span>
+        </div>
+      )}
       {lowStock.length > 0 && (
         <div className="flex items-center gap-3 p-4 rounded-xl mb-6 text-sm"
           style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)" }}>
           <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#f59e0b" }} />
           <span style={{ color: "var(--color-text-secondary)" }}>
-            <strong style={{ color: "#f59e0b" }}>{lowStock.length} produk</strong> stok menipis:{" "}
+            <strong style={{ color: "#f59e0b" }}>{lowStock.length} produk stok tipis:</strong>{" "}
             {lowStock.map(s => s.nama_produk).join(", ")}
           </span>
         </div>
@@ -277,24 +345,32 @@ export default function AdminSuplemenPage() {
         <div className="text-center py-16">
           <Loader2 className="w-6 h-6 animate-spin mx-auto" style={{ color: "var(--color-brand-orange)" }} />
         </div>
-      ) : suplemen.length === 0 ? (
+      ) : filteredSuplemen.length === 0 ? (
         <div className="card text-center py-12">
           <Package className="w-10 h-10 mx-auto mb-3 opacity-20" style={{ color: "var(--color-text-muted)" }} />
-          <p style={{ color: "var(--color-text-muted)" }}>Belum ada produk suplemen. Tambahkan produk pertama!</p>
+          <p style={{ color: "var(--color-text-muted)" }}>
+            {searchQuery ? `Tidak ada produk dengan nama "${searchQuery}"` : "Belum ada produk suplemen. Tambahkan produk pertama!"}
+          </p>
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {suplemen.map((s) => {
-            const isLow = s.stok <= s.stok_minimum;
+          {filteredSuplemen.map((s) => {
+            const isOutOf = s.stok === 0;
+            const isLow = !isOutOf && s.stok <= s.stok_minimum;
             return (
               <div key={s.id} className="card flex flex-col gap-3">
                 {/* Header */}
                 <div className="flex items-start justify-between">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: isLow ? "rgba(245,158,11,0.1)" : "rgba(255,107,44,0.1)" }}>
-                    <Package className="w-5 h-5" style={{ color: isLow ? "#f59e0b" : "var(--color-brand-orange)" }} />
+                    style={{ background: isOutOf ? "rgba(239,68,68,0.1)" : isLow ? "rgba(245,158,11,0.1)" : "rgba(255,107,44,0.1)" }}>
+                    <Package className="w-5 h-5" style={{ color: isOutOf ? "#ef4444" : isLow ? "#f59e0b" : "var(--color-brand-orange)" }} />
                   </div>
-                  {isLow && <span className="badge badge-warning"><AlertTriangle className="w-3 h-3" /> Stok Tipis</span>}
+                  {isOutOf
+                    ? <span className="badge badge-danger"><AlertTriangle className="w-3 h-3" /> Stok Habis</span>
+                    : isLow
+                    ? <span className="badge badge-warning"><AlertTriangle className="w-3 h-3" /> Stok Tipis</span>
+                    : null
+                  }
                 </div>
 
                 {/* Product info */}
@@ -324,14 +400,14 @@ export default function AdminSuplemenPage() {
                 <div>
                   <div className="flex justify-between text-xs mb-1" style={{ color: "var(--color-text-muted)" }}>
                     <span>Stok</span>
-                    <span style={{ color: isLow ? "#f59e0b" : "var(--color-text-primary)", fontWeight: 600 }}>
+                    <span style={{ color: isOutOf ? "#ef4444" : isLow ? "#f59e0b" : "var(--color-text-primary)", fontWeight: 600 }}>
                       {s.stok} {s.satuan}
                     </span>
                   </div>
                   <div className="progress-bar" style={{ height: "5px" }}>
                     <div className="progress-fill" style={{
                       width: `${Math.min(100, (s.stok / Math.max(s.stok_minimum * 3, 1)) * 100)}%`,
-                      background: isLow ? "#f59e0b" : "linear-gradient(90deg,#ff6b2c,#ffb347)",
+                      background: isOutOf ? "#ef4444" : isLow ? "#f59e0b" : "linear-gradient(90deg,#ff6b2c,#ffb347)",
                     }} />
                   </div>
                 </div>
@@ -339,7 +415,8 @@ export default function AdminSuplemenPage() {
                 {/* Action buttons */}
                 <div className="grid grid-cols-2 gap-2">
                   <button id={`sell-${s.id}`} onClick={() => setSellModal(s)}
-                    className="btn-danger justify-center py-2 text-xs">
+                    className="btn-danger justify-center py-2 text-xs"
+                    disabled={s.stok === 0}>
                     <Minus className="w-3 h-3" /> Jual
                   </button>
                   <button id={`restock-${s.id}`} onClick={() => setRestockModal(s)}
@@ -356,12 +433,19 @@ export default function AdminSuplemenPage() {
                   </button>
                 </div>
 
-                {/* History button */}
+                {/* History + Nonaktifkan buttons */}
                 <button onClick={() => setHistoryModal(s)}
                   className="flex items-center justify-between w-full text-xs py-2 px-3 rounded-xl transition-colors"
                   style={{ background: "var(--color-dark-700)", color: "var(--color-text-muted)" }}>
                   <span className="flex items-center gap-1.5"><History className="w-3 h-3" /> Riwayat Stok</span>
                   <ChevronRight className="w-3 h-3" />
+                </button>
+                <button
+                  onClick={() => handleDeactivate(s)}
+                  className="flex items-center justify-center gap-1.5 w-full text-xs py-2 px-3 rounded-xl transition-colors"
+                  style={{ background: "rgba(239,68,68,0.06)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.15)" }}
+                >
+                  <X className="w-3 h-3" /> Nonaktifkan Produk
                 </button>
               </div>
             );
@@ -400,6 +484,13 @@ export default function AdminSuplemenPage() {
                     className="btn-primary justify-center py-2 text-xs"
                   >
                     <RotateCcw className="w-3 h-3" /> Aktifkan Kembali
+                  </button>
+                  <button
+                    onClick={() => handleHardDelete(s)}
+                    className="btn-danger justify-center py-2 text-xs"
+                    style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)" }}
+                  >
+                    <X className="w-3 h-3" /> Hapus Permanen
                   </button>
                 </div>
               ))}

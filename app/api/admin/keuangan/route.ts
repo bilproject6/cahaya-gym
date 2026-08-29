@@ -1,4 +1,4 @@
-import { createClient, createAdminClient } from "@/lib/supabase/server";
+﻿import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 async function verifyAdmin() {
@@ -13,7 +13,7 @@ async function verifyAdmin() {
   return { error: null, status: 200, user, adminNama: profile.nama as string };
 }
 
-// GET — Semua data keuangan untuk bulan tertentu
+// GET - Semua data keuangan (mode: month | year | all)
 export async function GET(request: NextRequest) {
   const auth = await verifyAdmin();
   if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
@@ -21,10 +21,23 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const year = Number(searchParams.get("year") ?? new Date().getFullYear());
   const month = Number(searchParams.get("month") ?? new Date().getMonth() + 1);
+  const mode = searchParams.get("mode") ?? "month"; // "month" | "year" | "all"
 
-  const firstOfMonth = `${year}-${String(month).padStart(2, "0")}-01`;
-  const lastDay = new Date(year, month, 0).getDate();
-  const lastOfMonth = `${year}-${String(month).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+  let firstDate: string;
+  let lastDate: string;
+
+  if (mode === "all") {
+    firstDate = "2000-01-01";
+    lastDate = "2099-12-31";
+  } else if (mode === "year") {
+    firstDate = `${year}-01-01`;
+    lastDate = `${year}-12-31`;
+  } else {
+    const firstOfMonth = `${year}-${String(month).padStart(2, "0")}-01`;
+    const lastDay = new Date(year, month, 0).getDate();
+    firstDate = firstOfMonth;
+    lastDate = `${year}-${String(month).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+  }
 
   const admin = createAdminClient();
 
@@ -34,10 +47,10 @@ export async function GET(request: NextRequest) {
     { data: suppSales },
     { data: expenses },
   ] = await Promise.all([
-    admin.from("payments").select("jumlah, tanggal_bayar, member_id, catatan").gte("tanggal_bayar", firstOfMonth).lte("tanggal_bayar", lastOfMonth).order("tanggal_bayar", { ascending: false }),
-    admin.from("daily_visitors").select("jumlah_bayar, tanggal, nama").gte("tanggal", firstOfMonth).lte("tanggal", lastOfMonth).order("tanggal", { ascending: false }),
-    admin.from("supplement_sales").select("total_harga, tanggal").gte("tanggal", firstOfMonth).lte("tanggal", lastOfMonth).order("tanggal", { ascending: false }),
-    admin.from("expenses").select("id, kategori, jumlah, tanggal, catatan").gte("tanggal", firstOfMonth).lte("tanggal", lastOfMonth).order("tanggal", { ascending: false }),
+    admin.from("payments").select("jumlah, tanggal_bayar, member_id, catatan").gte("tanggal_bayar", firstDate).lte("tanggal_bayar", lastDate).order("tanggal_bayar", { ascending: false }),
+    admin.from("daily_visitors").select("jumlah_bayar, tanggal, nama").gte("tanggal", firstDate).lte("tanggal", lastDate).order("tanggal", { ascending: false }),
+    admin.from("supplement_sales").select("id, total_harga, harga_satuan, qty, tanggal, supplements(nama_produk, harga_beli)").gte("tanggal", firstDate).lte("tanggal", lastDate).order("tanggal", { ascending: false }),
+    admin.from("expenses").select("id, kategori, jumlah, tanggal, catatan").gte("tanggal", firstDate).lte("tanggal", lastDate).order("tanggal", { ascending: false }),
   ]);
 
   return NextResponse.json({
@@ -45,10 +58,9 @@ export async function GET(request: NextRequest) {
     visitors: visitors ?? [],
     suppSales: suppSales ?? [],
     expenses: expenses ?? [],
-    period: { firstOfMonth, lastOfMonth, year, month },
+    period: { firstDate, lastDate, year, month, mode },
   });
 }
-
 // POST — Tambah pengeluaran
 export async function POST(request: NextRequest) {
   const auth = await verifyAdmin();

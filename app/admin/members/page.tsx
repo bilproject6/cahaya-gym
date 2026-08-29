@@ -43,7 +43,7 @@ type PaymentAction = {
   title: string;
   memberNama: string;
   description: string;
-  onConfirm: (jumlah: number, catatan: string) => void;
+  onConfirm: (jumlah: number, catatan: string, durasi: number) => void;
 };
 
 // ════════════════════════════════════════
@@ -167,8 +167,21 @@ function PaymentConfirmModal({
 }) {
   const [jumlah, setJumlah] = useState("");
   const [catatan, setCatatan] = useState("");
+  const [durasi, setDurasi] = useState("30");
+  const [customDurasi, setCustomDurasi] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const durasiOptions = [
+    { label: "7 hari", value: "7" },
+    { label: "14 hari", value: "14" },
+    { label: "30 hari (1 bulan)", value: "30" },
+    { label: "60 hari (2 bulan)", value: "60" },
+    { label: "90 hari (3 bulan)", value: "90" },
+    { label: "Kustom...", value: "custom" },
+  ];
+
+  const effectiveDurasi = durasi === "custom" ? Number(customDurasi) : Number(durasi);
 
   const handleConfirm = async () => {
     const amount = Number(jumlah);
@@ -176,9 +189,13 @@ function PaymentConfirmModal({
       setError("Jumlah pembayaran wajib diisi dan harus lebih dari 0.");
       return;
     }
+    if (!effectiveDurasi || effectiveDurasi <= 0) {
+      setError("Durasi masa aktif harus lebih dari 0 hari.");
+      return;
+    }
     setLoading(true);
     setError("");
-    await action.onConfirm(amount, catatan);
+    await action.onConfirm(amount, catatan, effectiveDurasi);
     setLoading(false);
   };
 
@@ -229,6 +246,37 @@ function PaymentConfirmModal({
             <span>Pembayaran ini akan otomatis tercatat di <strong>Arus Kas</strong> sebagai pemasukan.</span>
           </div>
 
+          {/* Durasi masa aktif */}
+          <div>
+            <label className="input-label">DURASI MASA AKTIF <span style={{ color: "#ef4444" }}>*</span></label>
+            <select
+              className="input"
+              value={durasi}
+              onChange={(e) => { setDurasi(e.target.value); setError(""); }}
+            >
+              {durasiOptions.map(o => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+            {durasi === "custom" && (
+              <input
+                type="number"
+                className="input mt-2"
+                min={1}
+                max={365}
+                placeholder="Masukkan jumlah hari (contoh: 45)"
+                value={customDurasi}
+                onChange={(e) => { setCustomDurasi(e.target.value); setError(""); }}
+              />
+            )}
+            {effectiveDurasi > 0 && (
+              <p className="text-xs mt-1" style={{ color: "var(--color-text-muted)" }}>
+                Masa aktif: <strong style={{ color: "var(--color-brand-orange)" }}>{effectiveDurasi} hari</strong>
+              </p>
+            )}
+          </div>
+
+          {/* Jumlah bayar */}
           <div>
             <label className="input-label">
               JUMLAH BAYAR (Rp) <span style={{ color: "#ef4444" }}>*</span>
@@ -352,8 +400,8 @@ export default function AdminMembersPage() {
     setPaymentAction({
       title: "Konfirmasi & Aktifkan Member",
       memberNama: member.profiles?.nama || "",
-      description: `Aktifkan keanggotaan selama 30 hari dari hari ini. Masukkan jumlah yang telah dibayar oleh member.`,
-      onConfirm: async (jumlah, catatan) => {
+      description: `Aktifkan keanggotaan untuk ${member.profiles?.nama}. Pilih durasi dan masukkan jumlah yang telah dibayar.`,
+      onConfirm: async (jumlah, catatan, durasi) => {
         setActionLoading(member.id + "_verify");
         setPaymentAction(null);
         try {
@@ -367,6 +415,7 @@ export default function AdminMembersPage() {
               memberNama: member.profiles?.nama,
               jumlah_bayar: jumlah,
               catatan_bayar: catatan,
+              durasi_hari: durasi,
             }),
           });
           if (res.ok) {
@@ -387,8 +436,8 @@ export default function AdminMembersPage() {
     setPaymentAction({
       title: "Perpanjang Keanggotaan",
       memberNama: member.profiles?.nama || "",
-      description: `Perpanjang keanggotaan selama 30 hari. Masukkan jumlah iuran yang telah dibayar.`,
-      onConfirm: async (jumlah, catatan) => {
+      description: `Perpanjang keanggotaan ${member.profiles?.nama}. Pilih durasi dan masukkan jumlah iuran yang telah dibayar.`,
+      onConfirm: async (jumlah, catatan, durasi) => {
         setActionLoading(member.id + "_extend");
         setPaymentAction(null);
         try {
@@ -402,6 +451,7 @@ export default function AdminMembersPage() {
               memberNama: member.profiles?.nama,
               jumlah_bayar: jumlah,
               catatan_bayar: catatan,
+              durasi_hari: durasi,
             }),
           });
           if (res.ok) {
@@ -422,8 +472,8 @@ export default function AdminMembersPage() {
     setPaymentAction({
       title: "Aktifkan Member Baru",
       memberNama: p.nama,
-      description: `Aktifkan keanggotaan "${p.nama}" dari pendaftaran mandiri. Masa aktif 30 hari dari hari ini. Masukkan jumlah yang telah dibayar.`,
-      onConfirm: async (jumlah, catatan) => {
+      description: `Aktifkan keanggotaan "${p.nama}" dari pendaftaran mandiri. Pilih durasi dan masukkan jumlah yang telah dibayar.`,
+      onConfirm: async (jumlah, catatan, durasi) => {
         setActionLoading(p.id + "_pending");
         setPaymentAction(null);
         try {
@@ -436,6 +486,7 @@ export default function AdminMembersPage() {
               memberNama: p.nama,
               jumlah_bayar: jumlah,
               catatan_bayar: catatan,
+              durasi_hari: durasi,
             }),
           });
           if (res.ok) {
@@ -785,7 +836,14 @@ function AddMemberModal({ onClose, onSuccess }: { onClose: () => void; onSuccess
           </div>
           <div>
             <label className="input-label">NO. HP</label>
-            <input className="input" placeholder="08123456789" value={noHp} onChange={(e) => setNoHp(e.target.value)} />
+            <input
+              className="input"
+              placeholder="08123456789"
+              value={noHp}
+              inputMode="numeric"
+              pattern="[0-9]*"
+              onChange={(e) => setNoHp(e.target.value.replace(/[^0-9]/g, ""))}
+            />
           </div>
           <div>
             <label className="input-label">PASSWORD AWAL</label>
@@ -896,7 +954,15 @@ function EditMemberModal({ member, onClose, onSuccess }: { member: Member; onClo
             <label className="input-label">NO. HP</label>
             <div className="relative">
               <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--color-text-muted)" }} />
-              <input className="input" style={{ paddingLeft: "2.5rem" }} value={noHp} onChange={(e) => setNoHp(e.target.value)} placeholder="08123456789" />
+              <input
+                className="input"
+                style={{ paddingLeft: "2.5rem" }}
+                value={noHp}
+                inputMode="numeric"
+                pattern="[0-9]*"
+                onChange={(e) => setNoHp(e.target.value.replace(/[^0-9]/g, ""))}
+                placeholder="08123456789"
+              />
             </div>
           </div>
 

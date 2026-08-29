@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { formatRupiah, daysRemaining } from "@/lib/utils";
 import {
   Users, TrendingUp, TrendingDown, AlertTriangle,
-  UserCheck, CheckCircle, XCircle, Clock,
+  UserCheck, CheckCircle, XCircle, Clock, Package,
 } from "lucide-react";
 
 interface StatCardProps {
@@ -59,7 +59,9 @@ export default async function AdminDashboardPage() {
     { data: suppSales },
     { data: pendingMembers },
     { data: expiringSoon },
+    { data: todayVisitors },
     { data: lowStock },
+    { data: outOfStock },
   ] = await Promise.all([
     admin.from("members").select("id, tanggal_jatuh_tempo, status"),
     admin.from("payments").select("jumlah, tanggal_bayar").gte("tanggal_bayar", firstOfMonth),
@@ -72,10 +74,20 @@ export default async function AdminDashboardPage() {
       .eq("status", "aktif")
       .lte("tanggal_jatuh_tempo", in7Days)
       .gte("tanggal_jatuh_tempo", todayStr),
+    // Fetch detail non-member hari ini (nama + bayar)
+    admin.from("daily_visitors")
+      .select("id, nama, jumlah_bayar, tanggal, catatan")
+      .eq("tanggal", todayStr)
+      .order("created_at", { ascending: false }),
     admin.from("supplements")
       .select("id, nama_produk, stok, stok_minimum")
       .eq("is_active", true)
+      .gt("stok", 0)
       .filter("stok", "lte", "stok_minimum"),
+    admin.from("supplements")
+      .select("id, nama_produk, stok, stok_minimum")
+      .eq("is_active", true)
+      .eq("stok", 0),
   ]);
 
   const activeCount = allMembers?.filter(m => daysRemaining(m.tanggal_jatuh_tempo) > 0).length ?? 0;
@@ -112,12 +124,23 @@ export default async function AdminDashboardPage() {
         </div>
       )}
 
+      {(outOfStock && outOfStock.length > 0) && (
+        <div className="flex items-center gap-3 p-4 rounded-xl mb-3 text-sm"
+          style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#ef4444" }} />
+          <span style={{ color: "var(--color-text-secondary)" }}>
+            <strong style={{ color: "#ef4444" }}>{outOfStock.length} produk suplemen</strong> stok habis!{" "}
+            <a href="/admin/suplemen" style={{ color: "#ef4444", textDecoration: "underline" }}>Isi stok →</a>
+          </span>
+        </div>
+      )}
+
       {(lowStock && lowStock.length > 0) && (
         <div className="flex items-center gap-3 p-4 rounded-xl mb-6 text-sm"
           style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)" }}>
           <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#f59e0b" }} />
           <span style={{ color: "var(--color-text-secondary)" }}>
-            <strong style={{ color: "#f59e0b" }}>{lowStock.length} produk suplemen</strong> stok menipis.{" "}
+            <strong style={{ color: "#f59e0b" }}>{lowStock.length} produk suplemen</strong> stok tipis.{" "}
             <a href="/admin/suplemen" style={{ color: "#f59e0b", textDecoration: "underline" }}>Cek stok →</a>
           </span>
         </div>
@@ -201,6 +224,53 @@ export default async function AdminDashboardPage() {
                   </div>
                 );
               })}
+            </div>
+          )}
+        </div>
+
+        {/* Non-Member Hari Ini */}
+        <div className="card">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-semibold" style={{ color: "var(--color-text-primary)" }}>
+              Non-Member Hari Ini
+            </h2>
+            <a href="/admin/non-member" className="text-xs" style={{ color: "var(--color-brand-orange)" }}>
+              Kelola →
+            </a>
+          </div>
+
+          {!todayVisitors || todayVisitors.length === 0 ? (
+            <div className="text-center py-8">
+              <Package className="w-8 h-8 mx-auto mb-2 opacity-20" style={{ color: "var(--color-text-muted)" }} />
+              <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Belum ada non-member hari ini</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {todayVisitors.map((v: Record<string, unknown>) => (
+                <div key={v.id as string} className="flex items-center justify-between p-3 rounded-xl"
+                  style={{ background: "var(--color-dark-700)" }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                      style={{ background: "rgba(255,107,44,0.15)", color: "var(--color-brand-orange)" }}>
+                      {((v.nama as string) ?? "?").charAt(0).toUpperCase()}
+                    </div>
+                    <span className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
+                      {(v.nama as string) || <em style={{ color: "var(--color-text-muted)" }}>Tanpa nama</em>}
+                    </span>
+                  </div>
+                  <span className="text-sm font-semibold" style={{ color: "var(--color-status-active)" }}>
+                    +{formatRupiah(v.jumlah_bayar as number)}
+                  </span>
+                </div>
+              ))}
+              {/* Total */}
+              <div className="flex items-center justify-between px-3 pt-2"
+                style={{ borderTop: "1px solid var(--color-border-subtle)" }}>
+                <span className="text-xs font-bold" style={{ color: "var(--color-text-muted)" }}>TOTAL</span>
+                <span className="font-bebas text-lg" style={{ color: "var(--color-status-active)" }}>
+                  {formatRupiah(todayVisitors.reduce((s: number, v: Record<string, unknown>) => s + (v.jumlah_bayar as number), 0))}
+                </span>
+              </div>
             </div>
           )}
         </div>

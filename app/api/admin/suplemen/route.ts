@@ -326,15 +326,22 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-// ── DELETE — Nonaktifkan / Aktifkan kembali suplemen ─────────────────
+// ── DELETE — Nonaktifkan / Aktifkan kembali / Hapus Permanen suplemen ─────────────────
 export async function DELETE(request: NextRequest) {
   const auth = await verifyAdmin();
   if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
   try {
-    const { id, restore } = await request.json();
+    const { id, restore, permanent } = await request.json();
     if (!id) return NextResponse.json({ error: "ID wajib." }, { status: 400 });
     const admin = createAdminClient();
+
+    if (permanent) {
+      // Hard delete — hapus record produk permanen (riwayat tetap ada)
+      const { error } = await admin.from("supplements").delete().eq("id", id);
+      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ success: true, action: "deleted_permanently" });
+    }
 
     if (restore) {
       // Aktifkan kembali suplemen yang dinonaktifkan

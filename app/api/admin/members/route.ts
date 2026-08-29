@@ -170,8 +170,9 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json({ error: "Jumlah pembayaran harus diisi dan lebih dari 0." }, { status: 400 });
       }
 
+      const durasiHari = Math.max(1, Number(body.durasi_hari ?? 30));
       const today = new Date();
-      const expiry = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+      const expiry = new Date(today.getTime() + durasiHari * 24 * 60 * 60 * 1000);
       const expiryStr = expiry.toISOString().split("T")[0];
       const todayStr = today.toISOString().split("T")[0];
 
@@ -188,13 +189,13 @@ export async function PATCH(request: NextRequest) {
         jumlah: jumlahBayar,
         tanggal_bayar: todayStr,
         dicatat_oleh: auth.user!.id,
-        catatan: catatanBayar || `Pembayaran pertama — aktivasi member ${memberNama ?? ""}`,
+        catatan: catatanBayar || `Pembayaran pertama — aktivasi member ${memberNama ?? ""} (${durasiHari} hari)`,
       });
 
       await logAction(
         auth.user!.id, auth.adminName,
         "verifikasi_member", "member", memberId, memberNama || "",
-        `Verifikasi + aktivasi member baru (30 hari) — bayar Rp${jumlahBayar.toLocaleString("id")}`
+        `Verifikasi + aktivasi member baru (${durasiHari} hari, s/d ${expiryStr}) — bayar Rp${jumlahBayar.toLocaleString("id")}`
       );
 
       return NextResponse.json({ success: true });
@@ -206,6 +207,8 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json({ error: "Jumlah pembayaran harus diisi dan lebih dari 0." }, { status: 400 });
       }
 
+      const durasiHari = Math.max(1, Number(body.durasi_hari ?? 30));
+
       const { data: member } = await admin
         .from("members")
         .select("tanggal_jatuh_tempo")
@@ -215,7 +218,7 @@ export async function PATCH(request: NextRequest) {
       const baseDate = member?.tanggal_jatuh_tempo
         ? new Date(Math.max(new Date(member.tanggal_jatuh_tempo).getTime(), Date.now()))
         : new Date();
-      const newExpiry = new Date(baseDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+      const newExpiry = new Date(baseDate.getTime() + durasiHari * 24 * 60 * 60 * 1000);
       const newExpiryStr = newExpiry.toISOString().split("T")[0];
       const todayStr = new Date().toISOString().split("T")[0];
 
@@ -231,13 +234,13 @@ export async function PATCH(request: NextRequest) {
         jumlah: jumlahBayar,
         tanggal_bayar: todayStr,
         dicatat_oleh: auth.user!.id,
-        catatan: catatanBayar || `Perpanjangan keanggotaan ${memberNama ?? ""} s/d ${newExpiryStr}`,
+        catatan: catatanBayar || `Perpanjangan keanggotaan ${memberNama ?? ""} (${durasiHari} hari) s/d ${newExpiryStr}`,
       });
 
       await logAction(
         auth.user!.id, auth.adminName,
         "perpanjang_member", "member", memberId, memberNama || "",
-        `Perpanjang hingga ${newExpiryStr} — bayar Rp${jumlahBayar.toLocaleString("id")}`
+        `Perpanjang ${durasiHari} hari hingga ${newExpiryStr} — bayar Rp${jumlahBayar.toLocaleString("id")}`
       );
 
       return NextResponse.json({ success: true });
@@ -249,8 +252,9 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json({ error: "Jumlah pembayaran harus diisi dan lebih dari 0." }, { status: 400 });
       }
 
+      const durasiHari = Math.max(1, Number(body.durasi_hari ?? 30));
       const todayStr = new Date().toISOString().split("T")[0];
-      const expiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+      const expiry = new Date(Date.now() + durasiHari * 24 * 60 * 60 * 1000);
       const expiryStr = expiry.toISOString().split("T")[0];
 
       // Buat member record baru
@@ -275,13 +279,13 @@ export async function PATCH(request: NextRequest) {
         jumlah: jumlahBayar,
         tanggal_bayar: todayStr,
         dicatat_oleh: auth.user!.id,
-        catatan: catatanBayar || `Pembayaran pertama — aktivasi pendaftaran mandiri ${memberNama ?? ""}`,
+        catatan: catatanBayar || `Pembayaran pertama — aktivasi pendaftaran mandiri ${memberNama ?? ""} (${durasiHari} hari)`,
       });
 
       await logAction(
         auth.user!.id, auth.adminName,
         "verifikasi_member", "member", newMember.id, memberNama || "",
-        `Aktivasi pendaftaran mandiri — bayar Rp${jumlahBayar.toLocaleString("id")}`
+        `Aktivasi pendaftaran mandiri ${durasiHari} hari (s/d ${expiryStr}) — bayar Rp${jumlahBayar.toLocaleString("id")}`
       );
 
       return NextResponse.json({ success: true });
