@@ -52,8 +52,8 @@ export default function MemberLayoutClient({
     <div className={`sidebar ${mobile ? "relative w-full min-h-0 border-0" : ""}`}>
       {/* Logo */}
       <div className="p-5 flex items-center gap-3" style={{ borderBottom: "1px solid var(--color-border-subtle)" }}>
-        <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0">
-          <Image src="/logo.png" alt="Cahaya Gym" width={36} height={36} className="object-cover" />
+        <div className="w-9 h-9 flex-shrink-0 flex-shrink-0">
+          <Image src="/logo.png" alt="Cahaya Gym" width={36} height={36} className="object-contain" />
         </div>
         <div>
           <div className="font-bebas text-base leading-none" style={{ color: "var(--color-brand-orange)" }}>CAHAYA</div>

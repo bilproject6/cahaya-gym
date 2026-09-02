@@ -135,8 +135,8 @@ export default function RegisterPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-xl overflow-hidden">
-              <Image src="/logo.png" alt="Cahaya Gym" width={48} height={48} className="object-cover" />
+            <div className="w-12 h-12 flex-shrink-0">
+              <Image src="/logo.png" alt="Cahaya Gym" width={48} height={48} className="object-contain" />
             </div>
             <div className="text-left">
               <div className="font-bebas text-xl leading-none" style={{ color: "var(--color-brand-orange)" }}>CAHAYA</div>
