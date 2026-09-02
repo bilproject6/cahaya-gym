@@ -52,7 +52,7 @@ export default function LoginPage() {
         <div className="absolute bottom-0 left-0 right-0 h-64" style={{ background: "linear-gradient(to top, rgba(217,79,30,0.12), transparent)" }} />
         <div className="relative z-10 flex items-center gap-3">
           <div className="w-12 h-12 flex-shrink-0">
-            <Image src="/logo.png" alt="Cahaya Gym" width={48} height={48} className="object-contain w-full h-full" />
+            <Image src="/logo.png" alt="Cahaya Gym" width={48} height={48} className="object-contain w-full h-full" style={{ mixBlendMode: "screen" }} />
           </div>
           <div>
             <div className="font-bebas text-2xl leading-none" style={{ color: "var(--color-brand-orange)" }}>CAHAYA</div>
@@ -87,7 +87,7 @@ export default function LoginPage() {
           <div className="text-center mb-8 lg:hidden">
             <Link href="/" className="inline-flex items-center gap-3 mb-4">
               <div className="w-10 h-10 flex-shrink-0">
-                <Image src="/logo.png" alt="Cahaya Gym" width={40} height={40} className="object-contain" />
+                <Image src="/logo.png" alt="Cahaya Gym" width={40} height={40} className="object-contain" style={{ mixBlendMode: "screen" }} />
               </div>
               <div className="text-left">
                 <div className="font-bebas text-lg leading-none" style={{ color: "var(--color-brand-orange)" }}>CAHAYA</div>

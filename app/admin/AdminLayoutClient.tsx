@@ -73,7 +73,7 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
       {/* Logo */}
       <div className="p-5 flex items-center gap-3" style={{ borderBottom: "2px solid var(--color-border-subtle)" }}>
         <div className="w-9 h-9 flex-shrink-0 flex-shrink-0">
-          <Image src="/logo.png" alt="Cahaya Gym" width={36} height={36} className="object-contain" />
+          <Image src="/logo.png" alt="Cahaya Gym" width={36} height={36} className="object-contain" style={{ mixBlendMode: "screen" }} />
         </div>
         <div>
           <div className="font-bebas text-base leading-none" style={{ color: "var(--color-brand-orange)" }}>CAHAYA</div>
