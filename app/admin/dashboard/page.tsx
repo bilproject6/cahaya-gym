@@ -5,21 +5,23 @@ import {
   Users, TrendingUp, TrendingDown, AlertTriangle,
   UserCheck, CheckCircle, XCircle, Clock, Package,
 } from "lucide-react";
+import RealtimeClock from "./RealtimeClock";
 
 interface StatCardProps {
   label: string;
   value: string | number;
   sub?: string;
   icon: React.ReactNode;
-  accent?: "orange" | "green" | "red" | "yellow";
+  accent?: "orange" | "green" | "red" | "yellow" | "blue";
 }
 
 function StatCard({ label, value, sub, icon, accent = "orange" }: StatCardProps) {
   const colors = {
-    orange: { bg: "rgba(255,107,44,0.08)", color: "var(--color-brand-orange)" },
-    green:  { bg: "rgba(34,197,94,0.08)",  color: "var(--color-status-active)" },
-    red:    { bg: "rgba(239,68,68,0.08)",  color: "var(--color-status-danger)" },
-    yellow: { bg: "rgba(245,158,11,0.08)", color: "#f59e0b" },
+    orange: { bg: "rgba(217,79,30,0.1)",  color: "#d94f1e" },
+    green:  { bg: "rgba(74,140,63,0.1)",  color: "#4a8c3f" },
+    red:    { bg: "rgba(192,57,43,0.1)",  color: "#c0392b" },
+    yellow: { bg: "rgba(200,185,122,0.15)", color: "#c8b97a" },
+    blue:   { bg: "rgba(90,122,140,0.1)", color: "#5a7a8c" },
   };
   const { bg, color } = colors[accent];
 
@@ -103,45 +105,44 @@ export default async function AdminDashboardPage() {
   return (
     <div className="max-w-5xl mx-auto">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="font-bebas text-4xl mb-1" style={{ color: "var(--color-text-primary)" }}>
-          DASHBOARD ADMIN
-        </h1>
-        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          Ringkasan operasional Cahaya Gym hari ini
-        </p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+        <div>
+          <h1 className="font-bebas text-4xl mb-1" style={{ color: "var(--color-text-primary)" }}>DASHBOARD ADMIN</h1>
+          <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>Ringkasan operasional Cahaya Gym hari ini</p>
+        </div>
+        <RealtimeClock />
       </div>
 
       {/* ── Alerts ── */}
       {(pendingMembers && pendingMembers.length > 0) && (
         <div className="flex items-center gap-3 p-4 rounded-xl mb-6 text-sm"
-          style={{ background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.2)" }}>
-          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#a855f7" }} />
+          style={{ background: "rgba(200,185,122,0.08)", border: "1px solid rgba(200,185,122,0.25)" }}>
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#c8b97a" }} />
           <span style={{ color: "var(--color-text-secondary)" }}>
-            <strong style={{ color: "#a855f7" }}>{pendingMembers.length} member baru</strong> menunggu verifikasi.{" "}
-            <a href="/admin/members?filter=pending" style={{ color: "#a855f7", textDecoration: "underline" }}>Verifikasi sekarang →</a>
+            <strong style={{ color: "#c8b97a" }}>{pendingMembers.length} member baru</strong> menunggu verifikasi.{" "}
+            <a href="/admin/members?filter=pending" style={{ color: "#c8b97a", textDecoration: "underline" }}>Verifikasi sekarang →</a>
           </span>
         </div>
       )}
 
       {(outOfStock && outOfStock.length > 0) && (
         <div className="flex items-center gap-3 p-4 rounded-xl mb-3 text-sm"
-          style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>
-          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#ef4444" }} />
+          style={{ background: "rgba(192,57,43,0.08)", border: "1px solid rgba(192,57,43,0.25)" }}>
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#c0392b" }} />
           <span style={{ color: "var(--color-text-secondary)" }}>
-            <strong style={{ color: "#ef4444" }}>{outOfStock.length} produk suplemen</strong> stok habis!{" "}
-            <a href="/admin/suplemen" style={{ color: "#ef4444", textDecoration: "underline" }}>Isi stok →</a>
+            <strong style={{ color: "#c0392b" }}>{outOfStock.length} produk suplemen</strong> stok habis!{" "}
+            <a href="/admin/suplemen" style={{ color: "#c0392b", textDecoration: "underline" }}>Isi stok →</a>
           </span>
         </div>
       )}
 
       {(lowStock && lowStock.length > 0) && (
         <div className="flex items-center gap-3 p-4 rounded-xl mb-6 text-sm"
-          style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)" }}>
-          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#f59e0b" }} />
+          style={{ background: "rgba(200,185,122,0.08)", border: "1px solid rgba(200,185,122,0.2)" }}>
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#c8b97a" }} />
           <span style={{ color: "var(--color-text-secondary)" }}>
-            <strong style={{ color: "#f59e0b" }}>{lowStock.length} produk suplemen</strong> stok tipis.{" "}
-            <a href="/admin/suplemen" style={{ color: "#f59e0b", textDecoration: "underline" }}>Cek stok →</a>
+            <strong style={{ color: "#c8b97a" }}>{lowStock.length} produk suplemen</strong> stok tipis.{" "}
+            <a href="/admin/suplemen" style={{ color: "#c8b97a", textDecoration: "underline" }}>Cek stok →</a>
           </span>
         </div>
       )}
@@ -167,7 +168,7 @@ export default async function AdminDashboardPage() {
           value={dailyVisitors?.length ?? 0}
           sub={formatRupiah(visitorIncome)}
           icon={<UserCheck className="w-5 h-5" />}
-          accent="yellow"
+          accent="blue"
         />
         <StatCard
           label="Akan Expired (7 hr)"
@@ -206,7 +207,7 @@ export default async function AdminDashboardPage() {
                     style={{ background: "var(--color-dark-700)" }}>
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-                        style={{ background: "rgba(245,158,11,0.15)", color: "#f59e0b" }}>
+                        style={{ background: "rgba(200,185,122,0.15)", color: "#c8b97a" }}>
                         {(profile.nama ?? "?").charAt(0).toUpperCase()}
                       </div>
                       <div>

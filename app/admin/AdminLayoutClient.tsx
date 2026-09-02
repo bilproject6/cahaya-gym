@@ -12,6 +12,15 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/lib/theme-context";
 
+// Icon bottom nav mobile
+const bottomNavItems = [
+  { href: "/admin/dashboard",  label: "Dashboard",  icon: LayoutDashboard },
+  { href: "/admin/members",    label: "Member",     icon: Users },
+  { href: "/admin/non-member", label: "Non-Member", icon: UserCheck },
+  { href: "/admin/suplemen",   label: "Suplemen",   icon: Package },
+  { href: "/admin/keuangan",   label: "Keuangan",   icon: TrendingUp },
+];
+
 interface AdminLayoutClientProps {
   children: React.ReactNode;
   profile: { nama: string; role: string };
@@ -62,7 +71,7 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
   const SidebarContent = () => (
     <>
       {/* Logo */}
-      <div className="p-5 flex items-center gap-3" style={{ borderBottom: "1px solid var(--color-border-subtle)" }}>
+      <div className="p-5 flex items-center gap-3" style={{ borderBottom: "2px solid var(--color-border-subtle)" }}>
         <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0">
           <Image src="/logo.jpg" alt="Cahaya Gym" width={36} height={36} className="object-cover" />
         </div>
@@ -75,9 +84,9 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
       {/* Admin Badge */}
       <div className="px-4 py-4">
         <div className="flex items-center gap-3 p-3 rounded-xl"
-          style={{ background: "rgba(255,107,44,0.08)", border: "1px solid rgba(255,107,44,0.12)" }}>
+          style={{ background: "rgba(217,79,30,0.08)", border: "1px solid rgba(217,79,30,0.15)" }}>
           <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-            style={{ background: "linear-gradient(135deg,#ff6b2c,#ffb347)", color: "white" }}>
+            style={{ background: "#d94f1e", color: "#f0ead6" }}>
             {profile.nama.charAt(0).toUpperCase()}
           </div>
           <div className="overflow-hidden">
@@ -145,17 +154,17 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
     <div className="flex min-h-screen" style={{ background: "var(--color-dark-800)" }}>
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex flex-col flex-shrink-0"
-        style={{ width: "260px", background: "var(--color-dark-900)", borderRight: "1px solid var(--color-border-subtle)", position: "sticky", top: 0, height: "100vh" }}>
+        style={{ width: "260px", background: "var(--color-dark-900)", borderRight: "2px solid var(--color-border-subtle)", position: "sticky", top: 0, height: "100vh" }}>
         <SidebarContent />
       </aside>
 
-      {/* Mobile Overlay */}
+      {/* Mobile Drawer (slide dari kiri) */}
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-50"
-          style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)" }}
+          style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)" }}
           onClick={() => setSidebarOpen(false)}>
           <div className="absolute left-0 top-0 bottom-0 flex flex-col"
-            style={{ width: "260px", background: "var(--color-dark-900)" }}
+            style={{ width: "260px", background: "var(--color-dark-900)", borderRight: "2px solid var(--color-border-subtle)" }}
             onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-end p-4">
               <button onClick={() => setSidebarOpen(false)} style={{ color: "var(--color-text-muted)" }}>
@@ -167,11 +176,11 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
         </div>
       )}
 
-      {/* Main */}
+      {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile topbar */}
+        {/* Mobile topbar — minimal, hanya untuk menu + logo */}
         <header className="lg:hidden flex items-center justify-between px-4 py-3 sticky top-0 z-40"
-          style={{ background: "var(--color-dark-900)", borderBottom: "1px solid var(--color-border-subtle)" }}>
+          style={{ background: "var(--color-dark-900)", borderBottom: "2px solid var(--color-border-subtle)" }}>
           <button onClick={() => setSidebarOpen(true)} style={{ color: "var(--color-text-primary)" }}>
             <Menu className="w-5 h-5" />
           </button>
@@ -187,8 +196,43 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
           </div>
         </header>
 
-        <main className="flex-1 p-6">{children}</main>
+        {/* Page content — padding bawah untuk bottom nav mobile */}
+        <main className="flex-1 p-6 lg:pb-6 pb-20">{children}</main>
       </div>
+
+      {/* ═══ Mobile Bottom Navigation Bar ═══ */}
+      <nav
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 flex"
+        style={{
+          background: "var(--color-dark-900)",
+          borderTop: "2px solid var(--color-border-default)",
+          paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        }}
+      >
+        {bottomNavItems.map(({ href, label, icon: Icon }) => {
+          const isActive = pathname === href || pathname.startsWith(href + "/");
+          return (
+            <Link
+              key={href}
+              href={href}
+              className="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 transition-all"
+              style={{
+                color: isActive ? "var(--color-brand-orange)" : "var(--color-text-muted)",
+                minHeight: 56,
+              }}
+            >
+              <Icon className="w-5 h-5" />
+              <span className="text-xs font-semibold" style={{ fontSize: "0.65rem", letterSpacing: "0.02em" }}>{label}</span>
+              {isActive && (
+                <span
+                  className="absolute top-0 left-0 right-0 h-0.5"
+                  style={{ background: "var(--color-brand-orange)", borderRadius: "0 0 2px 2px" }}
+                />
+              )}
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }

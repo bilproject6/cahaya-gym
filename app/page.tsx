@@ -312,16 +312,29 @@ export default function LandingPage() {
         <div className="relative z-10 max-w-6xl mx-auto px-6 pt-28 pb-20">
           <div className="max-w-3xl">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 mb-6 animate-fade-in-up">
-              <span className="badge badge-orange">
-                <Zap className="w-3 h-3" /> Fitness Center
-              </span>
-              <span
+            <div className="inline-flex flex-col gap-1 mb-6 animate-fade-in-up">
+              <div className="inline-flex items-center gap-2">
+                <span className="badge badge-orange">
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: "#4ade80",
+                      animation: "pulse 1.5s ease-in-out infinite",
+                      flexShrink: 0,
+                    }}
+                  />{" "}
+                  BUKA SEKARANG
+                </span>
+              </div>
+              <div
                 className="text-xs font-medium"
-                style={{ color: "rgba(255,255,255,0.80)" }}
+                style={{ color: "rgba(240,234,214,0.7)", letterSpacing: "0.03em" }}
               >
-                Buka setiap hari
-              </span>
+                Sen–Kam 06.00–22.00 &nbsp;·&nbsp; Jum 14.00–22.00 &nbsp;·&nbsp; Sab–Min 07.00–21.00
+              </div>
             </div>
 
             {/* Main heading */}
@@ -367,42 +380,45 @@ export default function LandingPage() {
             </div>
 
             <div
-              className="grid grid-cols-3 gap-8 pt-8 border-t animate-fade-in-up delay-400"
-              style={{ borderColor: "rgba(255,255,255,0.15)" }}
+              className="grid grid-cols-3 pt-8 border-t animate-fade-in-up delay-400"
+              style={{ borderColor: "rgba(200,185,122,0.3)" }}
             >
               {/* Member Aktif — real-time */}
-              <div>
+              <div className="text-center px-4">
                 <div
                   className="font-bebas text-3xl md:text-4xl"
                   style={{ color: "var(--color-brand-orange)" }}
                 >
                   {memberCount !== null ? `${memberCount}+` : "..."}
                 </div>
-                <div className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.75)" }}>
+                <div className="text-sm mt-1" style={{ color: "rgba(240,234,214,0.7)" }}>
                   Member Aktif
                 </div>
               </div>
-              {/* Pengalaman — 10+ Tahun */}
-              <div>
+              {/* Separator */}
+              <div
+                className="text-center px-4 border-x"
+                style={{ borderColor: "rgba(200,185,122,0.25)" }}
+              >
                 <div
                   className="font-bebas text-3xl md:text-4xl"
                   style={{ color: "var(--color-brand-orange)" }}
                 >
                   <AnimatedCounter end={10} suffix="+ Tahun" />
                 </div>
-                <div className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.75)" }}>
+                <div className="text-sm mt-1" style={{ color: "rgba(240,234,214,0.7)" }}>
                   Pengalaman
                 </div>
               </div>
-              {/* Alat Gym — 20+ */}
-              <div>
+              {/* Alat Gym */}
+              <div className="text-center px-4">
                 <div
                   className="font-bebas text-3xl md:text-4xl"
                   style={{ color: "var(--color-brand-orange)" }}
                 >
                   <AnimatedCounter end={20} suffix="+" />
                 </div>
-                <div className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.75)" }}>
+                <div className="text-sm mt-1" style={{ color: "rgba(240,234,214,0.7)" }}>
                   Alat Gym
                 </div>
               </div>
@@ -866,110 +882,19 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Map Placeholder */}
-            <div
-              className="rounded-2xl overflow-hidden h-80 md:h-full min-h-64 flex items-center justify-center relative"
-              style={{
-                background: "var(--color-dark-600)",
-                border: "1px solid var(--color-border-default)",
-              }}
-            >
-              {/* Fake map placeholder */}
-              <div className="absolute inset-0 opacity-10">
-                <svg
+            {/* Map — Google Maps Embed */}
+              <div className="rounded-2xl overflow-hidden h-80 md:h-full min-h-64">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.0!2d107.0!3d-6.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sCahaya+Gym+Beji!5e0!3m2!1sen!2sid!4v1&q=Cahaya+Gym+Beji+Depok"
                   width="100%"
                   height="100%"
-                  viewBox="0 0 400 300"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect width="400" height="300" fill="#141825" />
-                  {/* Roads */}
-                  <rect
-                    x="0"
-                    y="140"
-                    width="400"
-                    height="4"
-                    fill="#1e2535"
-                    rx="2"
-                  />
-                  <rect
-                    x="180"
-                    y="0"
-                    width="4"
-                    height="300"
-                    fill="#1e2535"
-                    rx="2"
-                  />
-                  <rect
-                    x="0"
-                    y="80"
-                    width="400"
-                    height="2"
-                    fill="#141825"
-                    rx="1"
-                  />
-                  <rect
-                    x="0"
-                    y="200"
-                    width="400"
-                    height="2"
-                    fill="#141825"
-                    rx="1"
-                  />
-                  <rect
-                    x="100"
-                    y="0"
-                    width="2"
-                    height="300"
-                    fill="#141825"
-                    rx="1"
-                  />
-                  <rect
-                    x="280"
-                    y="0"
-                    width="2"
-                    height="300"
-                    fill="#141825"
-                    rx="1"
-                  />
-                </svg>
+                  style={{ border: 0, minHeight: 280 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Lokasi Cahaya Gym"
+                />
               </div>
-              <div className="relative z-10 text-center px-8">
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse-glow"
-                  style={{
-                    background: "rgba(255,107,44,0.15)",
-                    border: "2px solid var(--color-brand-orange)",
-                  }}
-                >
-                  <MapPin
-                    className="w-7 h-7"
-                    style={{ color: "var(--color-brand-orange)" }}
-                  />
-                </div>
-                <div
-                  className="font-semibold mb-1"
-                  style={{ color: "var(--color-text-primary)" }}
-                >
-                  Cahaya Gym
-                </div>
-                <div
-                  className="text-sm mb-4"
-                  style={{ color: "var(--color-text-muted)" }}
-                >
-                  Jl. Contoh Raya No. 123
-                </div>
-                <a
-                  href="https://share.google/azDM1HdkKC4uYJp0F"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-ghost text-sm"
-                >
-                  Buka di Google Maps
-                  <ChevronRight className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -978,11 +903,11 @@ export default function LandingPage() {
       <section className="py-16 px-6">
         <div className="max-w-6xl mx-auto">
           <div
-            className="relative overflow-hidden rounded-3xl p-10 md:p-16 text-center"
+            className="relative overflow-hidden rounded-2xl p-10 md:p-16 text-center"
             style={{
               background:
-                "linear-gradient(135deg, rgba(255,107,44,0.15) 0%, rgba(11,15,26,0.8) 50%, rgba(255,179,71,0.08) 100%)",
-              border: "1px solid rgba(255,107,44,0.2)",
+                "linear-gradient(135deg, rgba(217,79,30,0.15) 0%, rgba(26,34,16,0.9) 50%, rgba(200,185,122,0.08) 100%)",
+              border: "2px solid rgba(200,185,122,0.25)",
             }}
           >
             {/* Decorative */}
@@ -1046,49 +971,74 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ============ FOOTER ============ */}
       <footer
-        className="py-10 px-6 mt-4"
-        style={{ borderTop: "1px solid var(--color-border-default)" }}
+        className="py-12 px-6 mt-4"
+        style={{
+          borderTop: "2px solid var(--color-border-default)",
+          background: "var(--color-dark-900)",
+        }}
       >
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg overflow-hidden">
-              <Image
-                src="/logo.jpg"
-                alt="Cahaya Gym"
-                width={32}
-                height={32}
-                className="object-cover"
-              />
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-8">
+            {/* Kolom 1 — Logo + Tagline */}
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                  <Image src="/logo.jpg" alt="Cahaya Gym" width={40} height={40} className="object-cover" />
+                </div>
+                <span className="font-bebas text-2xl" style={{ color: "var(--color-brand-orange)" }}>CAHAYA GYM</span>
+              </div>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
+                Gym dengan fasilitas lengkap dan harga terjangkau di Beji. Menemanimu dalam setiap langkah perjalanan fitness.
+              </p>
             </div>
-            <span
-              className="font-bebas text-lg"
-              style={{ color: "var(--color-text-secondary)" }}
-            >
-              CAHAYA GYM
-            </span>
+
+            {/* Kolom 2 — Navigasi Cepat */}
+            <div>
+              <div className="font-bebas text-lg mb-3 tracking-wider" style={{ color: "var(--color-text-primary)" }}>NAVIGASI</div>
+              <div className="flex flex-col gap-2">
+                {["Beranda", "Harga", "Tutorial", "Lokasi"].map((item) => (
+                  <a
+                    key={item}
+                    href={`#${item.toLowerCase()}`}
+                    className="text-sm transition-colors hover:text-white"
+                    style={{ color: "var(--color-text-muted)" }}
+                  >
+                    {item}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Kolom 3 — Kontak & Jam */}
+            <div>
+              <div className="font-bebas text-lg mb-3 tracking-wider" style={{ color: "var(--color-text-primary)" }}>KONTAK</div>
+              <div className="space-y-2 text-sm" style={{ color: "var(--color-text-muted)" }}>
+                <div>
+                  <a href="https://wa.me/6281330256204" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2" style={{ color: "var(--color-status-active)" }}>
+                    <MessageCircle className="w-4 h-4" /> +62 813-3025-6204 (WhatsApp)
+                  </a>
+                </div>
+                <div className="mt-3" style={{ color: "var(--color-text-muted)" }}>
+                  <div className="font-semibold mb-1" style={{ color: "var(--color-text-secondary)" }}>Jam Buka:</div>
+                  <div>Sen–Kam: 06.00–22.00</div>
+                  <div>Jumat: 14.00–22.00</div>
+                  <div>Sab–Min: 07.00–21.00</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-            © 2026 Cahaya Gym. Semua hak dilindungi.
-          </p>
-          <div className="flex gap-6">
-            <Link
-              href="/login"
-              className="text-xs transition-colors"
-              style={{ color: "var(--color-text-muted)" }}
-            >
-              Login Member
-            </Link>
-            <a
-              href="https://wa.me/6281330256204"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs transition-colors"
-              style={{ color: "var(--color-text-muted)" }}
-            >
-              Hubungi Kami
-            </a>
+
+          {/* Copyright line */}
+          <div
+            className="pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs"
+            style={{ borderTop: "1px solid var(--color-border-subtle)", color: "var(--color-text-muted)" }}
+          >
+            <span>© 2026 Cahaya Gym Beji. Semua hak dilindungi.</span>
+            <div className="flex gap-5">
+              <Link href="/login" className="hover:text-white transition-colors">Login Member</Link>
+              <Link href="/register" className="hover:text-white transition-colors">Daftar Member</Link>
+            </div>
           </div>
         </div>
       </footer>
