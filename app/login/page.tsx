@@ -1,4 +1,4 @@
-Ôªø"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -52,7 +52,7 @@ export default function LoginPage() {
         <div className="absolute bottom-0 left-0 right-0 h-64" style={{ background: "linear-gradient(to top, rgba(217,79,30,0.12), transparent)" }} />
         <div className="relative z-10 flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl overflow-hidden">
-            <Image src="/logo.jpg" alt="Cahaya Gym" width={48} height={48} className="object-cover w-full h-full" />
+            <Image src="/logo.png" alt="Cahaya Gym" width={48} height={48} className="object-cover w-full h-full" />
           </div>
           <div>
             <div className="font-bebas text-2xl leading-none" style={{ color: "var(--color-brand-orange)" }}>CAHAYA</div>
@@ -75,7 +75,7 @@ export default function LoginPage() {
             ))}
           </div>
         </div>
-        <div className="relative z-10 text-xs" style={{ color: "var(--color-text-muted)" }}>Sen-Kam 06.00-22.00 ¬∑ Jum 14.00-22.00 ¬∑ Sab-Min 07.00-21.00</div>
+        <div className="relative z-10 text-xs" style={{ color: "var(--color-text-muted)" }}>Sen-Kam 06.00-22.00 ∑ Jum 14.00-22.00 ∑ Sab-Min 07.00-21.00</div>
       </div>
 
       {/* Panel Kanan - Form */}
@@ -87,7 +87,7 @@ export default function LoginPage() {
           <div className="text-center mb-8 lg:hidden">
             <Link href="/" className="inline-flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl overflow-hidden">
-                <Image src="/logo.jpg" alt="Cahaya Gym" width={40} height={40} className="object-cover" />
+                <Image src="/logo.png" alt="Cahaya Gym" width={40} height={40} className="object-cover" />
               </div>
               <div className="text-left">
                 <div className="font-bebas text-lg leading-none" style={{ color: "var(--color-brand-orange)" }}>CAHAYA</div>
@@ -120,7 +120,7 @@ export default function LoginPage() {
                   <Link href="/forgot-password" className="text-sm font-semibold px-2 py-0.5 rounded" style={{ color: "var(--color-brand-orange)", background: "rgba(217,79,30,0.08)" }}>Lupa password?</Link>
                 </div>
                 <div className="relative">
-                  <input id="login-password" type={showPassword ? "text" : "password"} className="input pr-12" placeholder="‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+                  <input id="login-password" type={showPassword ? "text" : "password"} className="input pr-12" placeholder="ïïïïïïïï" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
                   <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded" style={{ color: "var(--color-text-muted)" }} onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}>
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -136,7 +136,7 @@ export default function LoginPage() {
             </p>
           </div>
           <p className="text-center mt-6">
-            <Link href="/" className="text-sm" style={{ color: "var(--color-text-muted)" }}>‚Üê Kembali ke beranda</Link>
+            <Link href="/" className="text-sm" style={{ color: "var(--color-text-muted)" }}>? Kembali ke beranda</Link>
           </p>
         </div>
       </div>

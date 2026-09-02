@@ -170,7 +170,7 @@ export default function LandingPage() {
           <Link href="/" className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl overflow-hidden">
               <Image
-                src="/logo.jpg"
+                src="/logo.png"
                 alt="Cahaya Gym"
                 width={40}
                 height={40}
@@ -988,7 +988,7 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
-                  <Image src="/logo.jpg" alt="Cahaya Gym" width={40} height={40} className="object-cover" />
+                  <Image src="/logo.png" alt="Cahaya Gym" width={40} height={40} className="object-cover" />
                 </div>
                 <span className="font-bebas text-2xl" style={{ color: "var(--color-brand-orange)" }}>CAHAYA GYM</span>
               </div>

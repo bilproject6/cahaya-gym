@@ -53,7 +53,7 @@ export default function MemberLayoutClient({
       {/* Logo */}
       <div className="p-5 flex items-center gap-3" style={{ borderBottom: "1px solid var(--color-border-subtle)" }}>
         <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0">
-          <Image src="/logo.jpg" alt="Cahaya Gym" width={36} height={36} className="object-cover" />
+          <Image src="/logo.png" alt="Cahaya Gym" width={36} height={36} className="object-cover" />
         </div>
         <div>
           <div className="font-bebas text-base leading-none" style={{ color: "var(--color-brand-orange)" }}>CAHAYA</div>
