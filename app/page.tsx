@@ -174,7 +174,7 @@ export default function LandingPage() {
                 alt="Cahaya Gym"
                 width={40}
                 height={40}
-                className="object-contain w-full h-full" style={{ mixBlendMode: "screen" }}
+                className="object-contain w-full h-full"
               />
             </div>
             <div>
@@ -186,7 +186,7 @@ export default function LandingPage() {
               </span>
               <span
                 className="font-bebas text-xl leading-none ml-1"
-                style={{ color: "var(--color-text-primary)" }}
+                style={{ color: "var(--color-brand-orange)" }}
               >
                 GYM
               </span>
@@ -988,7 +988,7 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 flex-shrink-0">
-                  <Image src="/logo.png" alt="Cahaya Gym" width={40} height={40} className="object-contain w-full h-full" style={{ mixBlendMode: "screen" }} />
+                  <Image src="/logo.png" alt="Cahaya Gym" width={40} height={40} className="object-contain w-full h-full" />
                 </div>
                 <span className="font-bebas text-2xl" style={{ color: "var(--color-brand-orange)" }}>CAHAYA GYM</span>
               </div>
