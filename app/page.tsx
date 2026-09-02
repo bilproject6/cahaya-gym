@@ -237,16 +237,20 @@ export default function LandingPage() {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div
-            className="md:hidden glass border-t animate-fade-in"
-            style={{ borderColor: "var(--color-border-default)" }}
+            className="md:hidden border-t animate-fade-in"
+            style={{
+              borderColor: "var(--color-border-default)",
+              background: "var(--color-dark-800)",
+              backdropFilter: "blur(16px)",
+            }}
           >
             <div className="px-6 py-4 flex flex-col gap-4">
               {["Beranda", "Harga", "Tutorial", "Lokasi"].map((item) => (
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  className="text-sm font-medium py-2"
-                  style={{ color: "var(--color-text-secondary)" }}
+                  className="text-sm font-semibold py-2"
+                  style={{ color: "var(--color-text-primary)" }}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item}
