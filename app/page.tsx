@@ -783,9 +783,11 @@ export default function LandingPage() {
                       className="text-sm leading-relaxed"
                       style={{ color: "var(--color-text-secondary)" }}
                     >
-                      Jl. Contoh Raya No. 123
+                      Jl. Beji Pdam No.56, RT.04/RW.04
                       <br />
-                      Kota Anda, Provinsi 12345
+                      Beji, Kec. Pakal, Surabaya
+                      <br />
+                      Jawa Timur 60196
                     </div>
                   </div>
                 </div>
@@ -885,16 +887,17 @@ export default function LandingPage() {
             {/* Map — Google Maps Embed */}
               <div className="rounded-2xl overflow-hidden h-80 md:h-full min-h-64">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.0!2d107.0!3d-6.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sCahaya+Gym+Beji!5e0!3m2!1sen!2sid!4v1&q=Cahaya+Gym+Beji+Depok"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.3!2d112.6072!3d-7.2452!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7801275a17e7e7%3A0x4dd71e73a2a99c86!2sCahaya%20Gym%20Surabaya!5e0!3m2!1sid!2sid!4v1725270000000!5m2!1sid!2sid"
                   width="100%"
                   height="100%"
                   style={{ border: 0, minHeight: 280 }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Lokasi Cahaya Gym"
+                  title="Lokasi Cahaya Gym Surabaya"
                 />
               </div>
+
           </div>
         </div>
       </section>
@@ -990,7 +993,7 @@ export default function LandingPage() {
                 <span className="font-bebas text-2xl" style={{ color: "var(--color-brand-orange)" }}>CAHAYA GYM</span>
               </div>
               <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
-                Gym dengan fasilitas lengkap dan harga terjangkau di Beji. Menemanimu dalam setiap langkah perjalanan fitness.
+                Gym dengan fasilitas lengkap dan harga terjangkau di Surabaya. Menemanimu dalam setiap langkah perjalanan fitness.
               </p>
             </div>
 
