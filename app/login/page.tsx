@@ -75,7 +75,7 @@ export default function LoginPage() {
             ))}
           </div>
         </div>
-        <div className="relative z-10 text-xs" style={{ color: "var(--color-text-muted)" }}>Sen-Kam 06.00-22.00 · Jum 14.00-22.00 · Sab-Min 07.00-21.00</div>
+        <div className="relative z-10 text-xs" style={{ color: "var(--color-text-muted)" }}>Sen-Kam 06.00-22.00 ï¿½ Jum 14.00-22.00 ï¿½ Sab-Min 07.00-21.00</div>
       </div>
 
       {/* Panel Kanan - Form */}
@@ -120,7 +120,7 @@ export default function LoginPage() {
                   <Link href="/forgot-password" className="text-sm font-semibold px-2 py-0.5 rounded" style={{ color: "var(--color-brand-orange)", background: "rgba(217,79,30,0.08)" }}>Lupa password?</Link>
                 </div>
                 <div className="relative">
-                  <input id="login-password" type={showPassword ? "text" : "password"} className="input pr-12" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+                  <input id="login-password" type={showPassword ? "text" : "password"} className="input pr-12" placeholder="ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
                   <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded" style={{ color: "var(--color-text-muted)" }} onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}>
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
