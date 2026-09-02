@@ -906,8 +906,8 @@ export default function LandingPage() {
             className="relative overflow-hidden rounded-2xl p-10 md:p-16 text-center"
             style={{
               background:
-                "linear-gradient(135deg, rgba(217,79,30,0.15) 0%, rgba(26,34,16,0.9) 50%, rgba(200,185,122,0.08) 100%)",
-              border: "2px solid rgba(200,185,122,0.25)",
+                "linear-gradient(135deg, rgba(217,79,30,0.25) 0%, rgba(12,18,8,0.95) 40%, rgba(26,34,16,0.98) 100%)",
+              border: "2px solid rgba(200,185,122,0.3)",
             }}
           >
             {/* Decorative */}
@@ -927,7 +927,7 @@ export default function LandingPage() {
                     key={i}
                     className="w-5 h-5"
                     fill="currentColor"
-                    style={{ color: "var(--color-brand-gold)" }}
+                    style={{ color: "#c8b97a" }}
                   />
                 ))}
               </div>
@@ -935,17 +935,18 @@ export default function LandingPage() {
                 className="font-bebas mb-4"
                 style={{
                   fontSize: "clamp(2.5rem, 5vw, 4rem)",
-                  color: "var(--color-text-primary)",
+                  color: "#f0ead6",
+                  textShadow: "0 2px 8px rgba(0,0,0,0.4)",
                 }}
               >
                 SIAP MULAI{" "}
-                <span className="gradient-text">PERJALANAN</span>
+                <span style={{ color: "#d94f1e" }}>PERJALANAN</span>
                 <br />
                 FITNESS KAMU?
               </h2>
               <p
                 className="text-base mb-8 max-w-lg mx-auto"
-                style={{ color: "var(--color-text-secondary)" }}
+                style={{ color: "rgba(240,234,214,0.8)" }}
               >
                 Bergabunglah dengan ratusan member yang sudah merasakan
                 manfaat berlatih di Cahaya Gym. Daftar sekarang, bayar di
