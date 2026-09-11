@@ -160,7 +160,7 @@ export default function HomePage() {
           <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", border: "1px solid rgba(212,167,59,0.5)", padding: "0.375rem 0.875rem", marginBottom: "1.5rem" }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", display: "inline-block" }} />
             <span className="font-barlow" style={{ color: "#D4A73B", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-              Gym Lokal Beji · Buka Setiap Hari
+              Gym Lokal Surabaya · Buka Setiap Hari
             </span>
           </div>
 
@@ -173,7 +173,7 @@ export default function HomePage() {
 
           {/* Sub */}
           <p style={{ color: "rgba(255,255,255,0.75)", fontSize: "1.0625rem", maxWidth: 480, lineHeight: 1.6, marginBottom: "2rem" }}>
-            Fasilitas gym lengkap, harga terjangkau, komunitas solid. Mulai perjalanan fitnesmu di Cahaya Gym — gym rumahan terpercaya di Beji.
+            Fasilitas gym lengkap, harga terjangkau, komunitas solid. Mulai perjalanan fitnesmu di Cahaya Gym — gym terpercaya di Surabaya.
           </p>
 
           {/* CTA buttons */}
@@ -428,7 +428,7 @@ export default function HomePage() {
                       <MapPin size={12} /> Lokasi
                     </div>
                     <p style={{ fontSize: "0.9375rem", color: "rgba(255,255,255,0.85)", lineHeight: 1.6 }}>
-                      Jl. Raya Beji, Kecamatan Beji,<br />Depok, Jawa Barat
+                      Surabaya, Jawa Timur
                     </p>
                   </div>
                   <div>
@@ -519,7 +519,7 @@ export default function HomePage() {
                 </span>
               </div>
               <p style={{ fontSize: "0.875rem", color: "#8A8A82", lineHeight: 1.7 }}>
-                Latihan keras, hasil lebih keras.<br />Gym lokal Beji terpercaya sejak 2019.
+                Latihan keras, hasil lebih keras.<br />Gym terpercaya di Surabaya sejak 2019.
               </p>
             </div>
 

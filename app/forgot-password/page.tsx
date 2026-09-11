@@ -15,124 +15,105 @@ export default function ForgotPasswordPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-
     try {
       const res = await fetch("/api/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim() }),
       });
-
       const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Terjadi kesalahan. Coba lagi.");
-      } else {
-        setSent(true);
-      }
+      if (!res.ok) { setError(data.error || "Terjadi kesalahan. Coba lagi."); }
+      else { setSent(true); }
     } catch {
       setError("Terjadi kesalahan jaringan. Periksa koneksi internet.");
     }
-
     setLoading(false);
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-4"
-      style={{ background: "var(--color-dark-800)" }}
-    >
-      <div className="w-full max-w-md animate-fade-in-up">
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0A0A0A", padding: "2rem 1.5rem", fontFamily: "'Inter', sans-serif" }}>
+      <div style={{ width: "100%", maxWidth: 420 }}>
+
         {/* Logo */}
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 flex-shrink-0">
-              <Image src="/logo.png" alt="Cahaya Gym" width={48} height={48} className="object-contain" />
-            </div>
-            <div className="text-left">
-              <div className="font-bebas text-xl leading-none" style={{ color: "var(--color-brand-orange)" }}>CAHAYA</div>
-              <div className="font-bebas" style={{ color: "var(--color-brand-orange)" }}>GYM</div>
-            </div>
+        <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+          <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "0.625rem", textDecoration: "none" }}>
+            <Image src="/logo.png" alt="Cahaya Gym" width={44} height={44} style={{ objectFit: "contain" }} />
+            <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1.25rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#fff" }}>
+              CAHAYA <span style={{ color: "#B3141C" }}>GYM</span>
+            </span>
           </Link>
         </div>
 
         {sent ? (
-          <div className="card text-center">
-            <div
-              className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-              style={{ background: "rgba(34,197,94,0.1)", border: "2px solid rgba(34,197,94,0.3)" }}
-            >
-              <CheckCircle className="w-8 h-8" style={{ color: "var(--color-status-active)" }} />
+          <div style={{ background: "#111", border: "2px solid #222", padding: "2.5rem 2rem", textAlign: "center" }}>
+            <div style={{ width: 64, height: 64, background: "rgba(34,197,94,0.1)", border: "3px solid rgba(34,197,94,0.3)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem" }}>
+              <CheckCircle size={32} color="#22c55e" />
             </div>
-            <h2 className="text-xl font-bold mb-2" style={{ color: "var(--color-text-primary)" }}>
-              Email Terkirim!
-            </h2>
-            <p className="text-sm mb-6" style={{ color: "var(--color-text-secondary)" }}>
-              Link reset password telah dikirim ke <strong>{email}</strong>. Cek inbox atau folder spam kamu.
+            <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#D4A73B", marginBottom: "0.75rem" }}>Berhasil</p>
+            <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: "1.75rem", color: "#fff", textTransform: "uppercase", marginBottom: "1rem" }}>EMAIL TERKIRIM!</h2>
+            <p style={{ fontSize: "0.9375rem", color: "#8A8A82", lineHeight: 1.7, marginBottom: "1.75rem" }}>
+              Link reset password telah dikirim ke <strong style={{ color: "#fff" }}>{email}</strong>. Cek inbox atau folder spam kamu.
             </p>
-            <Link href="/login" className="btn-primary w-full justify-center">
+            <Link href="/login" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", width: "100%", background: "#B3141C", border: "2px solid #B3141C", color: "#fff", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "0.9375rem", letterSpacing: "0.12em", textTransform: "uppercase", padding: "0.875rem", textDecoration: "none" }}>
               Kembali ke Login
             </Link>
           </div>
         ) : (
-          <div className="card">
-            <h1 className="text-xl font-bold mb-2" style={{ color: "var(--color-text-primary)" }}>
-              Lupa Password?
-            </h1>
-            <p className="text-sm mb-6" style={{ color: "var(--color-text-muted)" }}>
-              Masukkan email akunmu. Kami akan kirimkan link untuk reset password.
+          <div style={{ background: "#111", border: "2px solid #222", padding: "2.5rem 2rem" }}>
+            <p style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#D4A73B", marginBottom: "0.5rem" }}>Reset Password</p>
+            <h1 style={{ fontFamily: "'Anton', sans-serif", fontSize: "1.75rem", color: "#fff", textTransform: "uppercase", marginBottom: "0.5rem" }}>LUPA PASSWORD?</h1>
+            <p style={{ fontSize: "0.9rem", color: "#8A8A82", marginBottom: "1.75rem", lineHeight: 1.6 }}>
+              Masukkan email yang terdaftar. Kami akan mengirimkan link untuk reset password.
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {error && (
-                <div
-                  className="flex items-center gap-3 p-4 rounded-xl text-sm"
-                  style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444" }}
-                >
-                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                  {error}
-                </div>
-              )}
+            {error && (
+              <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", padding: "0.875rem 1rem", marginBottom: "1.25rem", background: "rgba(179,20,28,0.1)", border: "1px solid rgba(179,20,28,0.4)", color: "#ef4444", fontSize: "0.875rem" }}>
+                <AlertCircle size={16} style={{ flexShrink: 0 }} />{error}
+              </div>
+            )}
 
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
               <div>
-                <label htmlFor="forgot-email" className="input-label">Email</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--color-text-muted)" }} />
+                <label htmlFor="forgot-email" style={{ display: "block", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "0.75rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#8A8A82", marginBottom: "0.5rem" }}>
+                  Alamat Email
+                </label>
+                <div style={{ position: "relative" }}>
+                  <Mail size={16} style={{ position: "absolute", left: "0.875rem", top: "50%", transform: "translateY(-50%)", color: "#555", pointerEvents: "none" }} />
                   <input
                     id="forgot-email"
                     type="email"
-                    className="input pl-10"
-                    placeholder="email@contoh.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    placeholder="email@contoh.com"
                     required
+                    style={{ width: "100%", background: "#1a1a1a", border: "2px solid #333", borderRadius: 0, color: "#fff", fontSize: "0.9375rem", padding: "0.875rem 1rem 0.875rem 2.5rem", outline: "none", transition: "border-color 0.2s", fontFamily: "'Inter', sans-serif" }}
+                    onFocus={e => e.currentTarget.style.borderColor = "#B3141C"}
+                    onBlur={e => e.currentTarget.style.borderColor = "#333"}
                   />
                 </div>
               </div>
 
               <button
-                id="forgot-submit-btn"
                 type="submit"
                 disabled={loading}
-                className="btn-primary w-full justify-center"
+                style={{ width: "100%", background: loading ? "#7a0d12" : "#B3141C", border: "2px solid #B3141C", color: "#fff", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: "1rem", letterSpacing: "0.12em", textTransform: "uppercase", padding: "1rem", borderRadius: 0, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", transition: "background 0.2s" }}
               >
-                {loading ? (
-                  <><Loader2 className="w-4 h-4 animate-spin" /> Mengirim...</>
-                ) : (
-                  <><Mail className="w-4 h-4" /> Kirim Link Reset</>
-                )}
+                {loading ? <><Loader2 size={18} style={{ animation: "spin 1s linear infinite" }} />Mengirim...</> : "KIRIM LINK RESET"}
               </button>
             </form>
 
-            <div className="divider my-5" />
-
-            <Link href="/login" className="flex items-center justify-center gap-2 text-sm" style={{ color: "var(--color-text-muted)" }}>
-              <ArrowLeft className="w-4 h-4" />
-              Kembali ke Login
-            </Link>
+            <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
+              <Link href="/login" style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", fontSize: "0.875rem", color: "#555", textDecoration: "none" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#555")}
+              >
+                <ArrowLeft size={15} /> Kembali ke login
+              </Link>
+            </div>
           </div>
         )}
       </div>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }
