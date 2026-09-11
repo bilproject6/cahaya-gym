@@ -373,23 +373,23 @@ export default function HomePage() {
       <section id="tutorial" style={{ background: "#F5F3EE", padding: "6rem 1.5rem" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: "2.5rem" }}>
-            <Kicker>Tutorial Gratis</Kicker>
-            <h2 className="font-anton" style={{ fontSize: "clamp(2.25rem, 5vw, 3.5rem)", color: "#0A0A0A", textTransform: "uppercase" }}>
+            <Kicker>Tutorial</Kicker>
+            <h2 className="font-anton" style={{ fontSize: "clamp(2.75rem, 6vw, 4.5rem)", color: "#0A0A0A", textTransform: "uppercase" }}>
               GERAKAN GYM.
             </h2>
           </Reveal>
 
           <Reveal>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", border: "3px solid #0A0A0A" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", border: "3px solid #0A0A0A" }}>
               {[
-                { img: "/Bench_Press.gif",      cat: "Dada",           title: "Bench Press" },
-                { img: "/Deadlift.gif",          cat: "Punggung",       title: "Deadlift" },
+                { img: "/Bench_Press.gif",      cat: "Dada",             title: "Bench Press" },
+                { img: "/Deadlift.gif",          cat: "Punggung",         title: "Deadlift" },
                 { img: "/Lat_Pulldown.gif",      cat: "Punggung & Bisep", title: "Lat Pulldown" },
-                { img: "/Bicep_Curl.gif",        cat: "Bisep",          title: "Bicep Curl" },
-                { img: "/Tricep_Pushdown.gif",   cat: "Trisep",         title: "Tricep Pushdown" },
-                { img: "/Cable_Crossover.gif",   cat: "Dada",           title: "Cable Crossover" },
-                { img: "/Leg_Press.gif",         cat: "Kaki",           title: "Leg Press" },
-                { img: "/Kettlebell_Swing.gif",  cat: "Full Body",      title: "Kettlebell Swing" },
+                { img: "/Bicep_Curl.gif",        cat: "Bisep",            title: "Bicep Curl" },
+                { img: "/Tricep_Pushdown.gif",   cat: "Trisep",           title: "Tricep Pushdown" },
+                { img: "/Cable_Crossover.gif",   cat: "Dada",             title: "Cable Crossover" },
+                { img: "/Leg_Press.gif",         cat: "Kaki",             title: "Leg Press" },
+                { img: "/Kettlebell_Swing.gif",  cat: "Full Body",        title: "Kettlebell Swing" },
               ].map((item, i) => (
                 <div key={i} className="gym-tutorial-card" style={{
                   position: "relative", overflow: "hidden", aspectRatio: "4/5",
