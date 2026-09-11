@@ -5,16 +5,22 @@
   --font-bebas: "Bebas Neue", sans-serif;
   --font-inter: "Inter", sans-serif;
   --font-oswald: "Oswald", sans-serif;
+  --font-anton: "Anton", sans-serif;
+  --font-barlow: "Barlow Condensed", sans-serif;
 
-  /* ═══ MILITARY STRENGTH PALETTE ═══ */
+  /* ═══ BOLD GYM REDESIGN TOKENS ═══ */
+  --gym-black:  #0A0A0A;
+  --gym-paper:  #F5F3EE;
+  --gym-red:    #B3141C;
+  --gym-gold:   #D4A73B;
+  --gym-grey:   #8A8A82;
+  --gym-white:  #FFFFFF;
 
-  /* Brand Colors — Orange-Red aksen utama */
+  /* ═══ MILITARY STRENGTH PALETTE (admin/member — backward compat) ═══ */
   --color-brand-orange: #d94f1e;
   --color-brand-orange-light: #e8693c;
   --color-brand-orange-dark: #b83d10;
   --color-brand-gold: #c8b97a;
-
-  /* Dark Background System — Olive / Army */
   --color-dark-900: #0c1208;
   --color-dark-800: #1a2210;
   --color-dark-700: #1e2b14;
@@ -23,19 +29,13 @@
   --color-dark-400: #354626;
   --color-dark-300: #3f5430;
   --color-dark-200: #4a6238;
-
-  /* Text — Off-white hangat */
   --color-text-primary: #f0ead6;
   --color-text-secondary: #c8b97a;
   --color-text-muted: #7a8c6a;
-
-  /* Status — Militer */
   --color-status-active: #4a8c3f;
   --color-status-warning: #c8b97a;
   --color-status-danger: #c0392b;
   --color-status-info: #4a7a8c;
-
-  /* Border */
   --color-border-default: #3a5a2e;
   --color-border-subtle: #2c3a1e;
 }
@@ -789,4 +789,137 @@ html.light .modal-overlay {
 
 html.light .sidebar-nav-item:hover {
   background: rgba(217, 79, 30, 0.08);
+}
+
+/* ══════════════════════════════════════════
+   BOLD GYM REDESIGN — Landing Page Styles
+   ══════════════════════════════════════════ */
+
+/* Typography */
+.font-anton {
+  font-family: "Anton", sans-serif;
+  letter-spacing: 0.01em;
+}
+.font-barlow {
+  font-family: "Barlow Condensed", sans-serif;
+  letter-spacing: 0.05em;
+}
+
+/* Gym Buttons */
+.gym-btn-red {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #B3141C;
+  color: #fff;
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.875rem 1.75rem;
+  border: 2px solid #B3141C;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-decoration: none;
+}
+.gym-btn-red:hover {
+  background: #8f0f15;
+  border-color: #8f0f15;
+}
+
+.gym-btn-outline-white {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: #fff;
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.875rem 1.75rem;
+  border: 2px solid #fff;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-decoration: none;
+}
+.gym-btn-outline-white:hover {
+  background: #fff;
+  color: #0A0A0A;
+}
+
+.gym-btn-outline-black {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: #0A0A0A;
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.875rem 1.75rem;
+  border: 2px solid #0A0A0A;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-decoration: none;
+}
+.gym-btn-outline-black:hover {
+  background: #0A0A0A;
+  color: #fff;
+}
+
+/* Marquee */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.gym-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 22s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gym-marquee-track { animation: none; }
+}
+
+/* Scroll-reveal */
+.gym-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.gym-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .gym-reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* Tutorial hover (grayscale -> color) */
+.gym-tutorial-card img {
+  filter: grayscale(100%) contrast(1.1);
+  transition: filter 0.4s ease, transform 0.4s ease;
+}
+.gym-tutorial-card:hover img {
+  filter: grayscale(0%) contrast(1);
+  transform: scale(1.04);
+}
+
+/* Focus states for accessibility */
+.gym-btn-red:focus-visible,
+.gym-btn-outline-white:focus-visible,
+.gym-btn-outline-black:focus-visible {
+  outline: 3px solid #D4A73B;
+  outline-offset: 3px;
 }

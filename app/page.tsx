@@ -1,1016 +1,537 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import {
-  Dumbbell,
-  Clock,
-  MapPin,
-  Phone,
-  Star,
-  ChevronRight,
-  Menu,
-  X,
-  Zap,
-  Shield,
-  Users,
-  Trophy,
-  MessageCircle,
-  CheckCircle,
-  Play,
-} from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { Menu, X, Star, MapPin, Clock, Phone, ChevronRight, MessageCircle } from "lucide-react";
 
-// ============ ANIMATED COUNTER ============
-function AnimatedCounter({
-  end,
-  suffix = "",
-  prefix = "",
-  duration = 2000,
-}: {
-  end: number;
-  suffix?: string;
-  prefix?: string;
-  duration?: number;
-}) {
-  const [count, setCount] = useState(0);
-  const [started, setStarted] = useState(false);
-  const ref = useRef<HTMLSpanElement>(null);
-
+// ─── Scroll-reveal hook ───────────────────────────────────────────────────────
+function useScrollReveal() {
+  const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !started) {
-          setStarted(true);
-        }
-      },
-      { threshold: 0.5 }
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { el.classList.add("visible"); obs.disconnect(); } },
+      { threshold: 0.12 }
     );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [started]);
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return ref;
+}
 
-  useEffect(() => {
-    if (!started) return;
-    let startTime: number;
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * end));
-      if (progress < 1) requestAnimationFrame(animate);
-    };
-    requestAnimationFrame(animate);
-  }, [started, end, duration]);
-
+// ─── Reveal wrapper ───────────────────────────────────────────────────────────
+function Reveal({ children, className = "", delay = 0, style }: { children: React.ReactNode; className?: string; delay?: number; style?: React.CSSProperties }) {
+  const ref = useScrollReveal();
   return (
-    <span ref={ref}>
-      {prefix}
-      {count}
-      {suffix}
-    </span>
+    <div ref={ref} className={`gym-reveal ${className}`} style={{ transitionDelay: `${delay}ms`, ...style }}>
+      {children}
+    </div>
   );
 }
 
-// ============ MAIN LANDING PAGE ============
-export default function LandingPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+// ─── Section Kicker label ─────────────────────────────────────────────────────
+function Kicker({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="font-barlow" style={{
+      fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em",
+      textTransform: "uppercase", color: "#D4A73B", marginBottom: "0.75rem",
+    }}>
+      {children}
+    </p>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MAIN PAGE
+// ═══════════════════════════════════════════════════════════════════════════════
+export default function HomePage() {
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [memberCount, setMemberCount] = useState<number | null>(null);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Fetch jumlah member aktif secara real-time
-  useEffect(() => {
-    fetch("/api/admin/members")
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (data?.members) {
-          const aktif = data.members.filter(
-            (m: { status: string; profiles?: { is_verified?: boolean } }) =>
-              m.status === "aktif" && m.profiles?.is_verified
-          ).length;
-          setMemberCount(aktif);
-        }
-      })
-      .catch(() => {}); // fallback diam-diam
-  }, []);
+  const WA_BASE = "https://wa.me/6281330256204";
+  const WA_MEMBER = `${WA_BASE}?text=Halo%20Cahaya%20Gym%2C%20saya%20ingin%20daftar%20member%20bulanan.`;
+  const WA_INFO   = `${WA_BASE}?text=Halo%2C%20saya%20ingin%20tahu%20lebih%20lanjut%20tentang%20Cahaya%20Gym.`;
+  const WA_TANYA  = `${WA_BASE}?text=Halo%20Cahaya%20Gym%2C%20saya%20ingin%20bertanya.`;
+  const WA_NONMEMBER = `${WA_BASE}?text=Halo%2C%20saya%20ingin%20datang%20sebagai%20pengunjung%20non-member.`;
 
-  const tutorials = [
-    {
-      id: 1,
-      title: "Bench Press",
-      kategori: "Dada & Triceps",
-      image: "/tutorial-bench-press.jpg",
-      desc: "Latihan dasar untuk membentuk otot dada, bahu, dan triceps. Cocok untuk pemula hingga mahir.",
-    },
-    {
-      id: 2,
-      title: "Barbell Squat",
-      kategori: "Kaki & Core",
-      image: "/tutorial-squat.jpg",
-      desc: "Raja latihan kaki. Melatih quads, hamstrings, gluteus, dan seluruh otot core secara bersamaan.",
-    },
-    {
-      id: 3,
-      title: "Deadlift",
-      kategori: "Punggung & Kaki",
-      image: "/tutorial-deadlift.jpg",
-      desc: "Latihan compound yang melatih hampir seluruh tubuh, terutama punggung bawah dan kaki.",
-    },
-    {
-      id: 4,
-      title: "Pull-Up",
-      kategori: "Punggung & Biceps",
-      image: "/tutorial-pullup.jpg",
-      desc: "Latihan bodyweight terbaik untuk melatih otot punggung lebar (lat) dan biceps.",
-    },
-  ];
-
-  const features = [
-    {
-      icon: <Dumbbell className="w-6 h-6" />,
-      title: "Alat Lengkap",
-      desc: "Peralatan gym modern dan terawat untuk hasil latihan optimal",
-    },
-    {
-      icon: <Shield className="w-6 h-6" />,
-      title: "Aman & Bersih",
-      desc: "Lingkungan bersih, aman, dan nyaman untuk semua kalangan",
-    },
-    {
-      icon: <Users className="w-6 h-6" />,
-      title: "Komunitas Solid",
-      desc: "Bergabung dengan komunitas fitnes yang mendukung progress kamu",
-    },
-    {
-      icon: <Trophy className="w-6 h-6" />,
-      title: "Harga Terjangkau",
-      desc: "Fasilitas premium dengan harga yang bersahabat untuk semua kalangan",
-    },
-  ];
+  const navLinks = ["Beranda", "Harga", "Tutorial", "Lokasi"];
 
   return (
-    <div
-      style={{ background: "var(--color-dark-800)" }}
-      className="min-h-screen"
-    >
-      {/* ============ NAVBAR ============ */}
+    <div style={{ fontFamily: "'Inter', sans-serif", background: "#F5F3EE", color: "#0A0A0A" }}>
+
+      {/* ══════════════════════════════════════════════════════════
+          NAVBAR
+          ══════════════════════════════════════════════════════════ */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? "glass border-b border-white/5" : "bg-transparent"
-        }`}
+        id="navbar"
+        style={{
+          position: "sticky", top: 0, zIndex: 100,
+          background: "#0A0A0A",
+          borderBottom: "3px solid #B3141C",
+          transition: "box-shadow 0.3s",
+          boxShadow: scrolled ? "0 4px 24px rgba(0,0,0,0.5)" : "none",
+        }}
       >
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 68 }}>
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 flex-shrink-0">
-              <Image
-                src="/logo.png"
-                alt="Cahaya Gym"
-                width={40}
-                height={40}
-                className="object-contain w-full h-full"
-              />
-            </div>
-            <div>
-              <span
-                className="font-bebas text-xl leading-none"
-                style={{ color: "var(--color-brand-orange)" }}
-              >
-                CAHAYA
-              </span>
-              <span
-                className="font-bebas text-xl leading-none ml-1"
-                style={{ color: "var(--color-brand-orange)" }}
-              >
-                GYM
-              </span>
-            </div>
+          <Link href="/" style={{ display: "flex", alignItems: "center", gap: "0.625rem", textDecoration: "none" }}>
+            <Image src="/logo.png" alt="Cahaya Gym logo" width={40} height={40} style={{ objectFit: "contain" }} />
+            <span className="font-barlow" style={{ color: "#fff", fontSize: "1.25rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+              CAHAYA <span style={{ color: "#B3141C" }}>GYM</span>
+            </span>
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
-            {["Beranda", "Harga", "Tutorial", "Lokasi"].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-sm font-medium transition-colors duration-200"
-                style={{ color: "rgba(255,255,255,0.85)" }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.color = "#ffffff")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "rgba(255,255,255,0.85)")
-                }
+          {/* Desktop nav */}
+          <div style={{ display: "flex", alignItems: "center", gap: "2rem" }} className="hidden-mobile">
+            {navLinks.map(item => (
+              <a key={item} href={`#${item.toLowerCase()}`}
+                className="font-barlow"
+                style={{ color: "#aaa", fontSize: "0.9375rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", transition: "color 0.2s" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#D4A73B")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#aaa")}
               >
                 {item}
               </a>
             ))}
           </div>
 
-          {/* CTA Buttons */}
-          <div className="hidden md:flex items-center gap-3">
-            <Link href="/login" className="btn-ghost text-sm">
-              Masuk
-            </Link>
-            <Link href="/register" className="btn-primary text-sm">
-              Daftar Member
-            </Link>
+          {/* Desktop CTA */}
+          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }} className="hidden-mobile">
+            <Link href="/login" className="gym-btn-outline-white" style={{ padding: "0.5rem 1.25rem", fontSize: "0.8125rem" }}>Masuk</Link>
+            <Link href="/register" className="gym-btn-red" style={{ padding: "0.5rem 1.25rem", fontSize: "0.8125rem" }}>Daftar Member</Link>
           </div>
 
-          {/* Mobile Menu Toggle */}
+          {/* Hamburger */}
           <button
-            className="md:hidden p-2 rounded-lg"
-            style={{ color: "var(--color-text-primary)" }}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            id="hamburger-btn"
+            onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
+            style={{ display: "none", background: "none", border: "none", color: "#fff", cursor: "pointer", padding: "0.5rem" }}
+            className="show-mobile"
           >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {mobileOpen ? <X size={26} /> : <Menu size={26} />}
           </button>
         </div>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div
-            className="md:hidden border-t animate-fade-in"
-            style={{
-              borderColor: "var(--color-border-default)",
-              background: "var(--color-dark-800)",
-              backdropFilter: "blur(16px)",
-            }}
-          >
-            <div className="px-6 py-4 flex flex-col gap-4">
-              {["Beranda", "Harga", "Tutorial", "Lokasi"].map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="text-sm font-semibold py-2"
-                  style={{ color: "var(--color-text-primary)" }}
-                  onClick={() => setMobileMenuOpen(false)}
+        {/* Mobile menu */}
+        {mobileOpen && (
+          <div style={{ background: "#111", borderTop: "1px solid #222", padding: "1rem 1.5rem 1.5rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", marginBottom: "1rem" }}>
+              {navLinks.map(item => (
+                <a key={item} href={`#${item.toLowerCase()}`}
+                  className="font-barlow"
+                  onClick={() => setMobileOpen(false)}
+                  style={{ color: "#fff", fontSize: "1.1rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none", padding: "0.625rem 0", borderBottom: "1px solid #222" }}
                 >
                   {item}
                 </a>
               ))}
-              <div className="flex flex-col gap-2 pt-2 border-t"
-                style={{ borderColor: "var(--color-border-default)" }}>
-                <Link href="/login" className="btn-ghost text-sm text-center">
-                  Masuk
-                </Link>
-                <Link href="/register" className="btn-primary text-sm text-center">
-                  Daftar Member
-                </Link>
-              </div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
+              <Link href="/login" className="gym-btn-outline-white" style={{ width: "100%", justifyContent: "center" }}>Masuk</Link>
+              <Link href="/register" className="gym-btn-red" style={{ width: "100%", justifyContent: "center" }}>Daftar Member</Link>
             </div>
           </div>
         )}
       </nav>
 
-      {/* ============ HERO SECTION ============ */}
-      <section
-        id="beranda"
-        className="relative min-h-screen flex items-center overflow-hidden"
-      >
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <Image
-            src="/hero-bg.jpg"
-            alt="Cahaya Gym interior"
-            fill
-            sizes="100vw"
-            className="object-cover opacity-40"
-            priority
-          />
-          {/* Overlays */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(135deg, rgba(6,8,16,0.88) 0%, rgba(11,15,26,0.65) 50%, rgba(6,8,16,0.82) 100%)",
-            }}
-          />
-          {/* Orange glow bottom */}
-          <div
-            className="absolute bottom-0 left-0 right-0 h-64"
-            style={{
-              background:
-                "linear-gradient(to top, rgba(255,107,44,0.08), transparent)",
-            }}
-          />
+      {/* ══════════════════════════════════════════════════════════
+          HERO
+          ══════════════════════════════════════════════════════════ */}
+      <section id="beranda" style={{ position: "relative", minHeight: "92vh", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+        {/* Background image */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+          <Image src="/hero-bg.jpg" alt="Cahaya Gym interior" fill style={{ objectFit: "cover", objectPosition: "center" }} priority />
+          {/* Overlay gradient */}
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(105deg, rgba(0,0,0,0.88) 0%, rgba(10,10,10,0.75) 50%, rgba(120,20,20,0.35) 100%)" }} />
         </div>
 
-        {/* Decorative circles */}
-        <div
-          className="absolute top-1/3 right-0 w-[600px] h-[600px] rounded-full opacity-5 blur-3xl"
-          style={{ background: "var(--color-brand-orange)" }}
-        />
-        <div
-          className="absolute -bottom-20 left-1/4 w-[400px] h-[400px] rounded-full opacity-5 blur-3xl"
-          style={{ background: "var(--color-brand-gold)" }}
-        />
+        {/* Content */}
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 1280, margin: "0 auto", padding: "0 1.5rem", paddingTop: "8rem", paddingBottom: "0", width: "100%" }}>
+          {/* Kicker label */}
+          <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", border: "1px solid rgba(212,167,59,0.5)", padding: "0.375rem 0.875rem", marginBottom: "1.5rem" }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", display: "inline-block" }} />
+            <span className="font-barlow" style={{ color: "#D4A73B", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase" }}>
+              Gym Lokal Beji · Buka Setiap Hari
+            </span>
+          </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6 pt-28 pb-20">
-          <div className="max-w-3xl">
-            {/* Badge */}
-            <div className="inline-flex flex-col gap-1 mb-6 animate-fade-in-up">
-              <div className="inline-flex items-center gap-2">
-                <span className="badge badge-orange">
-                  <span
-                    style={{
-                      display: "inline-block",
-                      width: 8,
-                      height: 8,
-                      borderRadius: "50%",
-                      background: "#4ade80",
-                      animation: "pulse 1.5s ease-in-out infinite",
-                      flexShrink: 0,
-                    }}
-                  />{" "}
-                  BUKA SEKARANG
-                </span>
-              </div>
-              <div
-                className="text-xs font-medium"
-                style={{ color: "rgba(240,234,214,0.7)", letterSpacing: "0.03em" }}
-              >
-                Sen–Kam 06.00–22.00 &nbsp;·&nbsp; Jum 14.00–22.00 &nbsp;·&nbsp; Sab–Min 07.00–21.00
-              </div>
-            </div>
+          {/* Headline */}
+          <h1 className="font-anton" style={{ fontSize: "clamp(3rem, 8vw, 6.5rem)", color: "#fff", lineHeight: 1.0, marginBottom: "1.25rem", textTransform: "uppercase" }}>
+            LATIHAN KERAS.<br />
+            HASIL LEBIH{" "}
+            <span style={{ WebkitTextStroke: "2px #D4A73B", color: "transparent" }}>KERAS.</span>
+          </h1>
 
-            {/* Main heading */}
-            <h1
-              className="font-bebas mb-6 leading-none animate-fade-in-up delay-100"
-              style={{ fontSize: "clamp(3.5rem, 8vw, 7rem)" }}
-            >
-              <span style={{ color: "var(--color-text-primary)" }}>
-                BANGKITKAN
-              </span>
-              <br />
-              <span className="gradient-text">POTENSIMU</span>
-              <br />
-              <span style={{ color: "var(--color-text-primary)" }}>
-                BERSAMA KAMI
-              </span>
-            </h1>
+          {/* Sub */}
+          <p style={{ color: "rgba(255,255,255,0.75)", fontSize: "1.0625rem", maxWidth: 480, lineHeight: 1.6, marginBottom: "2rem" }}>
+            Fasilitas gym lengkap, harga terjangkau, komunitas solid. Mulai perjalanan fitnesmu di Cahaya Gym — gym rumahan terpercaya di Beji.
+          </p>
 
-            <p
-              className="text-lg mb-8 max-w-xl leading-relaxed animate-fade-in-up delay-200"
-              style={{ color: "rgba(255,255,255,0.82)" }}
-            >
-              Cahaya Gym hadir untuk menemanimu dalam setiap langkah perjalanan
-              fitness. Fasilitas lengkap, harga terjangkau, komunitas yang
-              mendukung.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4 mb-16 animate-fade-in-up delay-300">
-              <Link href="/register" className="btn-primary">
-                <Zap className="w-4 h-4" />
-                Daftar Jadi Member
-              </Link>
-              <a
-                href="https://wa.me/6281330256204?text=Halo%2C%20saya%20ingin%20tahu%20lebih%20lanjut%20tentang%20Cahaya%20Gym"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-secondary"
-              >
-                <MessageCircle className="w-4 h-4" />
-                Hubungi Kami
-              </a>
-            </div>
-
-            <div
-              className="grid grid-cols-3 pt-8 border-t animate-fade-in-up delay-400"
-              style={{ borderColor: "rgba(200,185,122,0.3)" }}
-            >
-              {/* Member Aktif — real-time */}
-              <div className="text-center px-4">
-                <div
-                  className="font-bebas text-3xl md:text-4xl"
-                  style={{ color: "var(--color-brand-orange)" }}
-                >
-                  {memberCount !== null ? `${memberCount}+` : "..."}
-                </div>
-                <div className="text-sm mt-1" style={{ color: "rgba(240,234,214,0.7)" }}>
-                  Member Aktif
-                </div>
-              </div>
-              {/* Separator */}
-              <div
-                className="text-center px-4 border-x"
-                style={{ borderColor: "rgba(200,185,122,0.25)" }}
-              >
-                <div
-                  className="font-bebas text-3xl md:text-4xl"
-                  style={{ color: "var(--color-brand-orange)" }}
-                >
-                  <AnimatedCounter end={10} suffix="+ Tahun" />
-                </div>
-                <div className="text-sm mt-1" style={{ color: "rgba(240,234,214,0.7)" }}>
-                  Pengalaman
-                </div>
-              </div>
-              {/* Alat Gym */}
-              <div className="text-center px-4">
-                <div
-                  className="font-bebas text-3xl md:text-4xl"
-                  style={{ color: "var(--color-brand-orange)" }}
-                >
-                  <AnimatedCounter end={20} suffix="+" />
-                </div>
-                <div className="text-sm mt-1" style={{ color: "rgba(240,234,214,0.7)" }}>
-                  Alat Gym
-                </div>
-              </div>
-            </div>
+          {/* CTA buttons */}
+          <div style={{ display: "flex", gap: "0.875rem", flexWrap: "wrap", marginBottom: "4rem" }}>
+            <a href={WA_MEMBER} target="_blank" rel="noopener noreferrer" className="gym-btn-red">
+              Daftar Jadi Member
+            </a>
+            <a href={WA_INFO} target="_blank" rel="noopener noreferrer" className="gym-btn-outline-white">
+              <MessageCircle size={16} /> Hubungi via WhatsApp
+            </a>
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-float">
-          <div
-            className="text-xs tracking-widest"
-            style={{ color: "var(--color-text-muted)" }}
-          >
-            SCROLL
-          </div>
-          <div
-            className="w-px h-8"
-            style={{
-              background:
-                "linear-gradient(to bottom, var(--color-brand-orange), transparent)",
-            }}
-          />
-        </div>
-      </section>
-
-      {/* ============ FEATURES ============ */}
-      <section className="py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {features.map((feature, i) => (
-              <div
-                key={feature.title}
-                className="card text-center group"
-                style={{ animationDelay: `${i * 100}ms` }}
-              >
-                <div
-                  className="inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4 mx-auto group-hover:scale-110 transition-transform duration-300"
-                  style={{
-                    background: "rgba(255, 107, 44, 0.1)",
-                    color: "var(--color-brand-orange)",
-                  }}
-                >
-                  {feature.icon}
-                </div>
-                <h3
-                  className="font-semibold mb-2 text-sm"
-                  style={{ color: "var(--color-text-primary)" }}
-                >
-                  {feature.title}
-                </h3>
-                <p
-                  className="text-xs leading-relaxed"
-                  style={{ color: "var(--color-text-muted)" }}
-                >
-                  {feature.desc}
-                </p>
+        {/* Stats panel */}
+        <div style={{ position: "relative", zIndex: 1, background: "rgba(0,0,0,0.65)", borderTop: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(8px)" }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 1.5rem", display: "grid", gridTemplateColumns: "repeat(3, 1fr)" }}>
+            {[
+              { num: "500+", label: "Member Aktif" },
+              { num: "5+ Tahun", label: "Tahun Berdiri" },
+              { num: "30+ Unit", label: "Alat Gym" },
+            ].map((stat, i) => (
+              <div key={i} style={{
+                padding: "1.5rem 1rem", textAlign: "center",
+                borderRight: i < 2 ? "1px solid rgba(255,255,255,0.1)" : "none",
+              }}>
+                <div className="font-barlow" style={{ fontSize: "clamp(1.5rem, 4vw, 2.25rem)", fontWeight: 700, color: "#fff" }}>{stat.num}</div>
+                <div style={{ fontSize: "0.8125rem", color: "rgba(255,255,255,0.5)", marginTop: "0.25rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ============ PRICING SECTION ============ */}
-      <section id="harga" className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          {/* Section header */}
-          <div className="text-center mb-12">
-            <span className="badge badge-orange mb-4">Harga Terjangkau</span>
-            <h2
-              className="font-bebas text-5xl md:text-6xl mb-4"
-              style={{ color: "var(--color-text-primary)" }}
-            >
-              PILIH PAKET
-              <span className="gradient-text ml-3">KAMU</span>
-            </h2>
-            <p style={{ color: "var(--color-text-secondary)" }}>
-              Tidak ada biaya tersembunyi. Bayar sesuai kebutuhan.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            {/* Non-Member Card */}
-            <div
-              className="card relative overflow-hidden group"
-              style={{ border: "1px solid var(--color-border-default)" }}
-            >
-              <div
-                className="text-xs font-bold tracking-widest uppercase mb-4"
-                style={{ color: "var(--color-text-muted)" }}
-              >
-                Non-Member
-              </div>
-              <div className="mb-6">
-                <div
-                  className="font-bebas text-5xl"
-                  style={{ color: "var(--color-text-primary)" }}
-                >
-                  Rp10.000
-                </div>
-                <div
-                  className="text-sm mt-1"
-                  style={{ color: "var(--color-text-muted)" }}
-                >
-                  per kunjungan
-                </div>
-              </div>
-              <ul className="space-y-3 mb-8">
-                {[
-                  "Akses seluruh area gym",
-                  "Semua alat fitness tersedia",
-                  "Loker & toilet",
-                ].map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-center gap-2 text-sm"
-                    style={{ color: "var(--color-text-secondary)" }}
-                  >
-                    <CheckCircle
-                      className="w-4 h-4 flex-shrink-0"
-                      style={{ color: "var(--color-status-active)" }}
-                    />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="https://wa.me/6281330256204?text=Halo%2C%20saya%20ingin%20datang%20sebagai%20pengunjung%20harian"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-ghost w-full justify-center"
-              >
-                Datang Langsung
-              </a>
+      {/* ══════════════════════════════════════════════════════════
+          MARQUEE
+          ══════════════════════════════════════════════════════════ */}
+      <div style={{ background: "#B3141C", borderTop: "3px solid #0A0A0A", borderBottom: "3px solid #0A0A0A", overflow: "hidden", padding: "0.875rem 0" }}>
+        <div className="gym-marquee-track" aria-hidden="true">
+          {[1, 2].map(idx => (
+            <div key={idx} className="font-barlow" style={{ display: "flex", alignItems: "center", gap: "1.5rem", paddingRight: "1.5rem", whiteSpace: "nowrap", fontWeight: 700, fontSize: "0.9375rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#fff" }}>
+              {["CAHAYA GYM", "ALAT LENGKAP", "HARGA TERJANGKAU", "BUKA SETIAP HARI", "KOMUNITAS SOLID", "MULAI SEKARANG"].map((text, i) => (
+                <span key={i} style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+                  {text}
+                  <Star size={12} fill="#D4A73B" stroke="none" />
+                </span>
+              ))}
             </div>
+          ))}
+        </div>
+      </div>
 
-            {/* Member Card — Featured */}
-            <div
-              className="relative overflow-hidden rounded-2xl group"
-              style={{
-                background:
-                  "linear-gradient(135deg, rgba(255,107,44,0.12), rgba(255,179,71,0.05))",
-                border: "1px solid rgba(255,107,44,0.3)",
-              }}
-            >
-              {/* Popular badge */}
-              <div
-                className="absolute top-4 right-4 text-xs font-bold px-3 py-1 rounded-full"
-                style={{
-                  background: "var(--color-brand-orange)",
-                  color: "white",
-                }}
-              >
-                ⭐ TERPOPULER
+      {/* ══════════════════════════════════════════════════════════
+          KENAPA CAHAYA GYM
+          ══════════════════════════════════════════════════════════ */}
+      <section style={{ background: "#0A0A0A", padding: "6rem 1.5rem" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <Reveal>
+            <Kicker>Keunggulan Kami</Kicker>
+            <h2 className="font-anton" style={{ fontSize: "clamp(2.25rem, 5vw, 3.5rem)", color: "#fff", textTransform: "uppercase", marginBottom: "3rem" }}>
+              KENAPA CAHAYA GYM?
+            </h2>
+          </Reveal>
+          <div style={{
+            display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}>
+            {[
+              { num: "01", title: "Alat Lengkap", desc: "30+ unit alat fitness modern mencakup cardio, beban, dan functional training untuk semua level." },
+              { num: "02", title: "Aman & Bersih", desc: "Fasilitas dirawat rutin, lingkungan bersih, dan aman — nyaman untuk latihan harian." },
+              { num: "03", title: "Komunitas Solid", desc: "Bergabung bersama ratusan member aktif yang saling mendukung dan memotivasi satu sama lain." },
+              { num: "04", title: "Harga Terjangkau", desc: "Member bulanan hanya Rp100.000, non-member Rp10.000/kunjungan. Gym berkualitas tanpa harga mahal." },
+            ].map((item, i) => (
+              <Reveal key={i} delay={i * 100}>
+                <div style={{
+                  padding: "2.5rem 2rem",
+                  borderRight: i < 3 ? "1px solid rgba(255,255,255,0.08)" : "none",
+                  height: "100%",
+                }}>
+                  <div className="font-barlow" style={{ fontSize: "3rem", fontWeight: 700, color: "#B3141C", lineHeight: 1, marginBottom: "1rem" }}>{item.num}</div>
+                  <h3 className="font-anton" style={{ fontSize: "1.375rem", color: "#fff", textTransform: "uppercase", marginBottom: "0.75rem" }}>{item.title}</h3>
+                  <p style={{ fontSize: "0.9375rem", color: "#8A8A82", lineHeight: 1.7 }}>{item.desc}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          HARGA
+          ══════════════════════════════════════════════════════════ */}
+      <section id="harga" style={{ background: "#F5F3EE", padding: "6rem 1.5rem" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <Reveal style={{ textAlign: "center", marginBottom: "3rem" }}>
+            <Kicker>Harga Terjangkau</Kicker>
+            <h2 className="font-anton" style={{ fontSize: "clamp(2.25rem, 5vw, 3.5rem)", color: "#0A0A0A", textTransform: "uppercase" }}>
+              PILIH PAKETMU.
+            </h2>
+          </Reveal>
+
+          <Reveal>
+            <div style={{ border: "3px solid #0A0A0A", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
+              {/* Non-member */}
+              <div style={{ padding: "2.5rem 2rem", background: "#fff", borderRight: "3px solid #0A0A0A" }}>
+                <div className="font-barlow" style={{ fontSize: "0.8125rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#8A8A82", marginBottom: "1rem" }}>Non-Member</div>
+                <div style={{ display: "flex", alignItems: "flex-end", gap: "0.375rem", marginBottom: "0.375rem" }}>
+                  <span className="font-anton" style={{ fontSize: "3.5rem", color: "#0A0A0A", lineHeight: 1 }}>10K</span>
+                  <span style={{ fontSize: "0.9375rem", color: "#8A8A82", marginBottom: "0.5rem" }}>/kunjungan</span>
+                </div>
+                <p style={{ fontSize: "0.875rem", color: "#8A8A82", marginBottom: "1.75rem" }}>Bayar setiap kunjungan, tanpa komitmen.</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginBottom: "2rem" }}>
+                  {["Akses semua alat gym", "Bebas pilih waktu latihan", "Tanpa pendaftaran", "Bayar per kunjungan"].map((f, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+                      <ChevronRight size={14} color="#B3141C" />
+                      <span style={{ fontSize: "0.9375rem", color: "#333" }}>{f}</span>
+                    </div>
+                  ))}
+                </div>
+                <a href={WA_NONMEMBER} target="_blank" rel="noopener noreferrer" className="gym-btn-outline-black" style={{ width: "100%", justifyContent: "center" }}>
+                  Kunjungi Sekarang
+                </a>
               </div>
 
-              {/* Glow effect */}
-              <div
-                className="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl opacity-20"
-                style={{ background: "var(--color-brand-orange)" }}
-              />
-
-              <div className="relative p-6">
-                <div
-                  className="text-xs font-bold tracking-widest uppercase mb-4"
-                  style={{ color: "var(--color-brand-orange)" }}
-                >
-                  Member Bulanan
+              {/* Member bulanan */}
+              <div style={{ padding: "2.5rem 2rem", background: "#0A0A0A", position: "relative", overflow: "hidden" }}>
+                {/* Badge */}
+                <div style={{ position: "absolute", top: "1rem", right: "1rem" }}>
+                  <span className="font-barlow" style={{ background: "#B3141C", color: "#fff", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", padding: "0.25rem 0.75rem" }}>
+                    Terpopuler
+                  </span>
                 </div>
-                <div className="mb-6">
-                  <div
-                    className="font-bebas text-5xl"
-                    style={{ color: "var(--color-text-primary)" }}
-                  >
-                    Rp100.000
-                  </div>
-                  <div
-                    className="text-sm mt-1"
-                    style={{ color: "var(--color-text-muted)" }}
-                  >
-                    per bulan (30 hari akses)
-                  </div>
+                <div className="font-barlow" style={{ fontSize: "0.8125rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#D4A73B", marginBottom: "1rem" }}>Member Bulanan</div>
+                <div style={{ display: "flex", alignItems: "flex-end", gap: "0.375rem", marginBottom: "0.375rem" }}>
+                  <span className="font-anton" style={{ fontSize: "3.5rem", color: "#fff", lineHeight: 1 }}>100K</span>
+                  <span style={{ fontSize: "0.9375rem", color: "rgba(255,255,255,0.5)", marginBottom: "0.5rem" }}>/bulan</span>
                 </div>
-                <ul className="space-y-3 mb-8">
-                  {[
-                    "Akses tidak terbatas selama 30 hari",
-                    "Semua alat fitness tersedia",
-                    "Dashboard member digital",
-                    "Pantau status keanggotaan",
-                    "Riwayat pembayaran online",
-                    "Tutorial gerakan gym eksklusif",
-                  ].map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-center gap-2 text-sm"
-                      style={{ color: "var(--color-text-secondary)" }}
-                    >
-                      <CheckCircle
-                        className="w-4 h-4 flex-shrink-0"
-                        style={{ color: "var(--color-brand-orange)" }}
-                      />
-                      {item}
-                    </li>
+                <p style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)", marginBottom: "1.75rem" }}>Akses tak terbatas, hemat lebih banyak.</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginBottom: "2rem" }}>
+                  {["Akses tak terbatas 30 hari", "Semua alat gym tersedia", "Jam operasional penuh", "Komunitas member aktif", "Bisa perpanjang kapan saja"].map((f, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+                      <ChevronRight size={14} color="#D4A73B" />
+                      <span style={{ fontSize: "0.9375rem", color: "rgba(255,255,255,0.85)" }}>{f}</span>
+                    </div>
                   ))}
-                </ul>
-                <Link href="/register" className="btn-primary w-full justify-center">
-                  <Zap className="w-4 h-4" />
+                </div>
+                <Link href="/register" className="gym-btn-red" style={{ width: "100%", justifyContent: "center" }}>
                   Daftar Sekarang
                 </Link>
               </div>
             </div>
-          </div>
-
-          {/* Note */}
-          <p
-            className="text-center text-xs mt-6"
-            style={{ color: "var(--color-text-muted)" }}
-          >
-            * Pembayaran dilakukan langsung di gym. Admin akan mengaktifkan
-            keanggotaan Anda setelah verifikasi.
-          </p>
+          </Reveal>
         </div>
       </section>
 
-      {/* ============ TUTORIAL SECTION ============ */}
-      <section id="tutorial" className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          {/* Section header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-            <div>
-              <span className="badge badge-orange mb-4">Tutorial Gratis</span>
-              <h2
-                className="font-bebas text-5xl md:text-6xl"
-                style={{ color: "var(--color-text-primary)" }}
-              >
-                GERAKAN
-                <span className="gradient-text ml-3">GYM</span>
-              </h2>
-            </div>
-            <p
-              className="max-w-xs text-sm"
-              style={{ color: "var(--color-text-muted)" }}
-            >
-              Pelajari gerakan yang benar agar latihan lebih efektif dan
-              menghindari cedera.
-            </p>
-          </div>
-
-          {/* Tutorial Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {tutorials.map((tutorial, i) => (
-              <div
-                key={tutorial.id}
-                className="group relative overflow-hidden rounded-2xl cursor-pointer"
-                style={{
-                  background: "var(--color-dark-600)",
-                  border: "1px solid var(--color-border-default)",
-                  animationDelay: `${i * 100}ms`,
-                }}
-              >
-                {/* Image */}
-                <div className="relative h-48 overflow-hidden">
-                  <Image
-                    src={tutorial.image}
-                    alt={tutorial.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  {/* Overlay */}
-                  <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
-                    style={{ background: "rgba(255,107,44,0.15)" }}
-                  >
-                    <div
-                      className="w-12 h-12 rounded-full flex items-center justify-center"
-                      style={{ background: "rgba(255,107,44,0.9)" }}
-                    >
-                      <Play className="w-5 h-5 text-white ml-1" />
-                    </div>
+      {/* ══════════════════════════════════════════════════════════
+          TIGA LANGKAH MUDAH
+          ══════════════════════════════════════════════════════════ */}
+      <section style={{ background: "#0A0A0A", padding: "6rem 1.5rem" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <Reveal style={{ textAlign: "center", marginBottom: "3.5rem" }}>
+            <Kicker>Cara Bergabung</Kicker>
+            <h2 className="font-anton" style={{ fontSize: "clamp(2.25rem, 5vw, 3.5rem)", color: "#fff", textTransform: "uppercase" }}>
+              TIGA LANGKAH MUDAH.
+            </h2>
+          </Reveal>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "0" }}>
+            {[
+              { step: "01", title: "Datang ke Gym", desc: "Kunjungi Cahaya Gym di Beji. Tidak perlu janji dulu — langsung datang dan kami siap menyambut." },
+              { step: "02", title: "Pilih Paket", desc: "Pilih paket Non-Member (Rp10K/kunjungan) atau Member Bulanan (Rp100K/bulan) sesuai kebutuhanmu." },
+              { step: "03", title: "Mulai Latihan", desc: "Langsung gunakan semua fasilitas — alat lengkap, suasana bersemangat, komunitas yang mendukung." },
+            ].map((item, i) => (
+              <Reveal key={i} delay={i * 120}>
+                <div style={{
+                  padding: "2.5rem 2rem",
+                  borderRight: i < 2 ? "1px solid rgba(255,255,255,0.08)" : "none",
+                  textAlign: "center", height: "100%",
+                }}>
+                  <div className="font-anton" style={{
+                    fontSize: "6rem", color: "transparent",
+                    WebkitTextStroke: "2px #D4A73B",
+                    lineHeight: 1, marginBottom: "1.25rem",
+                  }}>
+                    {item.step}
                   </div>
-                  {/* Category badge */}
-                  <div className="absolute top-3 left-3">
-                    <span className="badge badge-orange text-xs">
-                      {tutorial.kategori}
-                    </span>
-                  </div>
+                  <h3 className="font-anton" style={{ fontSize: "1.5rem", color: "#fff", textTransform: "uppercase", marginBottom: "0.875rem" }}>{item.title}</h3>
+                  <p style={{ fontSize: "0.9375rem", color: "#8A8A82", lineHeight: 1.7 }}>{item.desc}</p>
                 </div>
-
-                {/* Content */}
-                <div className="p-4">
-                  <h3
-                    className="font-semibold mb-1"
-                    style={{ color: "var(--color-text-primary)" }}
-                  >
-                    {tutorial.title}
-                  </h3>
-                  <p
-                    className="text-xs leading-relaxed"
-                    style={{ color: "var(--color-text-muted)" }}
-                  >
-                    {tutorial.desc}
-                  </p>
-                </div>
-              </div>
+              </Reveal>
             ))}
           </div>
-
-          {/* Join CTA */}
-          <div
-            className="mt-8 p-6 rounded-2xl text-center"
-            style={{
-              background:
-                "linear-gradient(135deg, rgba(255,107,44,0.08), rgba(255,179,71,0.04))",
-              border: "1px solid rgba(255,107,44,0.15)",
-            }}
-          >
-            <p className="text-sm mb-3" style={{ color: "var(--color-text-secondary)" }}>
-              🔒 Member mendapatkan akses tutorial lebih lengkap & eksklusif
-            </p>
-            <Link href="/register" className="btn-primary">
-              Daftar Sekarang &rarr;
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* ============ LOCATION & INFO ============ */}
-      <section id="lokasi" className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8 items-start">
-            {/* Info Card */}
-            <div>
-              <span className="badge badge-orange mb-4">Informasi Gym</span>
-              <h2
-                className="font-bebas text-5xl md:text-6xl mb-8"
-                style={{ color: "var(--color-text-primary)" }}
-              >
-                TEMUKAN
-                <span className="gradient-text ml-3">KAMI</span>
-              </h2>
+      {/* ══════════════════════════════════════════════════════════
+          TUTORIAL GERAKAN
+          ══════════════════════════════════════════════════════════ */}
+      <section id="tutorial" style={{ background: "#F5F3EE", padding: "6rem 1.5rem" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <Reveal style={{ marginBottom: "2.5rem" }}>
+            <Kicker>Tutorial Gratis</Kicker>
+            <h2 className="font-anton" style={{ fontSize: "clamp(2.25rem, 5vw, 3.5rem)", color: "#0A0A0A", textTransform: "uppercase" }}>
+              GERAKAN GYM.
+            </h2>
+          </Reveal>
 
-              <div className="space-y-6">
-                {/* Location */}
-                <div className="flex gap-4">
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-1"
-                    style={{
-                      background: "rgba(255, 107, 44, 0.1)",
-                      color: "var(--color-brand-orange)",
-                    }}
-                  >
-                    <MapPin className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div
-                      className="font-semibold mb-1"
-                      style={{ color: "var(--color-text-primary)" }}
-                    >
-                      Lokasi
-                    </div>
-                    <div
-                      className="text-sm leading-relaxed"
-                      style={{ color: "var(--color-text-secondary)" }}
-                    >
-                      Jl. Beji Pdam No.56, RT.04/RW.04
-                      <br />
-                      Beji, Kec. Pakal, Surabaya
-                      <br />
-                      Jawa Timur 60196
-                    </div>
+          <Reveal>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", border: "3px solid #0A0A0A" }}>
+              {[
+                { img: "/tutorial-squat.jpg", cat: "Kaki", title: "Squat" },
+                { img: "/tutorial-bench-press.jpg", cat: "Dada", title: "Bench Press" },
+                { img: "/tutorial-deadlift.jpg", cat: "Punggung", title: "Deadlift" },
+                { img: "/tutorial-pullup.jpg", cat: "Punggung & Bisep", title: "Pull-Up" },
+              ].map((item, i) => (
+                <div key={i} className="gym-tutorial-card" style={{
+                  position: "relative", overflow: "hidden", aspectRatio: "4/5",
+                  borderRight: i < 3 ? "3px solid #0A0A0A" : "none",
+                  cursor: "pointer",
+                }}>
+                  <img src={item.img} alt={item.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  {/* Overlay */}
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%)" }} />
+                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "1.25rem 1rem" }}>
+                    <div className="font-barlow" style={{ fontSize: "0.7rem", fontWeight: 700, color: "#D4A73B", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.25rem" }}>{item.cat}</div>
+                    <h3 className="font-anton" style={{ fontSize: "1.5rem", color: "#fff", textTransform: "uppercase" }}>{item.title}</h3>
                   </div>
                 </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
-                {/* Hours */}
-                <div className="flex gap-4">
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-1"
-                    style={{
-                      background: "rgba(255, 107, 44, 0.1)",
-                      color: "var(--color-brand-orange)",
-                    }}
-                  >
-                    <Clock className="w-5 h-5" />
+      {/* ══════════════════════════════════════════════════════════
+          LOKASI & KONTAK
+          ══════════════════════════════════════════════════════════ */}
+      <section id="lokasi" style={{ background: "#0A0A0A", padding: "6rem 1.5rem" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <Reveal style={{ marginBottom: "2.5rem" }}>
+            <Kicker>Temukan Kami</Kicker>
+            <h2 className="font-anton" style={{ fontSize: "clamp(2.25rem, 5vw, 3.5rem)", color: "#fff", textTransform: "uppercase" }}>
+              LOKASI & KONTAK.
+            </h2>
+          </Reveal>
+
+          <Reveal>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", border: "3px solid rgba(255,255,255,0.12)" }}>
+              {/* Info */}
+              <div style={{ padding: "2.5rem 2rem", background: "#0A0A0A", borderRight: "3px solid rgba(255,255,255,0.12)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+                  <div>
+                    <div className="font-barlow" style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", color: "#D4A73B", textTransform: "uppercase", marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.375rem" }}>
+                      <MapPin size={12} /> Lokasi
+                    </div>
+                    <p style={{ fontSize: "0.9375rem", color: "rgba(255,255,255,0.85)", lineHeight: 1.6 }}>
+                      Jl. Raya Beji, Kecamatan Beji,<br />Depok, Jawa Barat
+                    </p>
                   </div>
                   <div>
-                    <div
-                      className="font-semibold mb-2"
-                      style={{ color: "var(--color-text-primary)" }}
-                    >
-                      Jam Operasional
+                    <div className="font-barlow" style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", color: "#D4A73B", textTransform: "uppercase", marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.375rem" }}>
+                      <Clock size={12} /> Jam Operasional
                     </div>
-                    <div className="space-y-1">
-                      {[
-                        { day: "Senin – Kamis", time: "06.00 – 22.00", special: false },
-                        { day: "Jumat", time: "14.00 – 22.00", special: true },
-                        { day: "Sabtu – Minggu", time: "07.00 – 21.00", special: false },
-                      ].map((schedule) => (
-                        <div
-                          key={schedule.day}
-                          className="flex justify-between text-sm gap-8"
-                        >
-                          <span style={{ color: schedule.special ? "var(--color-brand-orange)" : "var(--color-text-muted)" }}>
-                            {schedule.day}
-                          </span>
-                          <span
-                            className="font-medium"
-                            style={{ color: schedule.special ? "var(--color-brand-orange)" : "var(--color-text-secondary)" }}
-                          >
-                            {schedule.time}
-                          </span>
-                        </div>
-                      ))}
-                      <div className="text-xs mt-2 pt-2" style={{ borderTop: "1px solid var(--color-border-subtle)", color: "var(--color-text-muted)" }}>
-                        * Jumat buka siang setelah sholat Jumat
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Contact */}
-                <div className="flex gap-4">
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-1"
-                    style={{
-                      background: "rgba(255, 107, 44, 0.1)",
-                      color: "var(--color-brand-orange)",
-                    }}
-                  >
-                    <Phone className="w-5 h-5" />
+                    <p style={{ fontSize: "0.9375rem", color: "rgba(255,255,255,0.85)", lineHeight: 1.8 }}>
+                      Senin – Kamis: 06.00 – 22.00<br />
+                      Jumat: 14.00 – 22.00<br />
+                      Sabtu – Minggu: 07.00 – 21.00
+                    </p>
                   </div>
                   <div>
-                    <div
-                      className="font-semibold mb-2"
-                      style={{ color: "var(--color-text-primary)" }}
-                    >
-                      Kontak
+                    <div className="font-barlow" style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", color: "#D4A73B", textTransform: "uppercase", marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.375rem" }}>
+                      <Phone size={12} /> Kontak
                     </div>
-                    <a
-                      href="https://wa.me/6281330256204"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm"
-                      style={{ color: "var(--color-status-active)" }}
-                    >
-                      <MessageCircle className="w-4 h-4" />
+                    <a href={WA_BASE} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.9375rem", color: "rgba(255,255,255,0.85)", textDecoration: "none" }}>
                       +62 813-3025-6204 (WhatsApp)
                     </a>
                   </div>
                 </div>
+                <div style={{ marginTop: "2rem" }}>
+                  <a href={WA_TANYA} target="_blank" rel="noopener noreferrer" className="gym-btn-red" style={{ width: "100%", justifyContent: "center" }}>
+                    <MessageCircle size={16} /> Chat via WhatsApp
+                  </a>
+                </div>
               </div>
 
-              {/* WA Button */}
-              <div className="mt-8">
-                <a
-                  href="https://wa.me/6281330256204?text=Halo%20Cahaya%20Gym%2C%20saya%20ingin%20bertanya%20lebih%20lanjut"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  Chat via WhatsApp
-                </a>
-              </div>
-            </div>
-
-            {/* Map — Google Maps Embed */}
-              <div className="rounded-2xl overflow-hidden h-80 md:h-full min-h-64">
+              {/* Map */}
+              <div style={{ overflow: "hidden", minHeight: 320 }}>
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.3!2d112.6072!3d-7.2452!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7801275a17e7e7%3A0x4dd71e73a2a99c86!2sCahaya%20Gym%20Surabaya!5e0!3m2!1sid!2sid!4v1725270000000!5m2!1sid!2sid"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.3!2d112.6072!3d-7.2452!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMTQnNDIuNyJTIDExMsKwMzYnMjUuOSJF!5e0!3m2!1sid!2sid!4v1234567890"
                   width="100%"
                   height="100%"
-                  style={{ border: 0, minHeight: 280 }}
+                  style={{ border: 0, display: "block", minHeight: 320, filter: "grayscale(30%) contrast(1.05)" }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Lokasi Cahaya Gym Surabaya"
+                  title="Lokasi Cahaya Gym"
                 />
               </div>
-
-          </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* ============ CTA BANNER ============ */}
-      <section className="py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div
-            className="relative overflow-hidden rounded-2xl p-10 md:p-16 text-center"
-            style={{
-              background:
-                "linear-gradient(135deg, rgba(217,79,30,0.25) 0%, rgba(12,18,8,0.95) 40%, rgba(26,34,16,0.98) 100%)",
-              border: "2px solid rgba(200,185,122,0.3)",
-            }}
-          >
-            {/* Decorative */}
-            <div
-              className="absolute -top-20 -left-20 w-60 h-60 rounded-full blur-3xl opacity-20"
-              style={{ background: "var(--color-brand-orange)" }}
-            />
-            <div
-              className="absolute -bottom-20 -right-20 w-60 h-60 rounded-full blur-3xl opacity-10"
-              style={{ background: "var(--color-brand-gold)" }}
-            />
-
-            <div className="relative z-10">
-              <div className="flex justify-center mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    style={{ color: "#c8b97a" }}
-                  />
-                ))}
-              </div>
-              <h2
-                className="font-bebas mb-4"
-                style={{
-                  fontSize: "clamp(2.5rem, 5vw, 4rem)",
-                  color: "#f0ead6",
-                  textShadow: "0 2px 8px rgba(0,0,0,0.4)",
-                }}
-              >
-                SIAP MULAI{" "}
-                <span style={{ color: "#d94f1e" }}>PERJALANAN</span>
-                <br />
-                FITNESS KAMU?
-              </h2>
-              <p
-                className="text-base mb-8 max-w-lg mx-auto"
-                style={{ color: "rgba(240,234,214,0.8)" }}
-              >
-                Bergabunglah dengan ratusan member yang sudah merasakan
-                manfaat berlatih di Cahaya Gym. Daftar sekarang, bayar di
-                gym.
-              </p>
-              <div className="flex flex-wrap gap-4 justify-center">
-                <Link href="/register" className="btn-primary">
-                  <Dumbbell className="w-4 h-4" />
-                  Daftar Member Sekarang
-                </Link>
-                <a
-                  href="https://wa.me/6281330256204"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-secondary"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  Tanya via WhatsApp
-                </a>
-              </div>
+      {/* ══════════════════════════════════════════════════════════
+          CTA PENUTUP
+          ══════════════════════════════════════════════════════════ */}
+      <section style={{ position: "relative", padding: "7rem 1.5rem", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+          <Image src="/hero-bg.jpg" alt="" fill style={{ objectFit: "cover", objectPosition: "center" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(0,0,0,0.92) 0%, rgba(120,10,14,0.75) 100%)" }} />
+        </div>
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
+          <Reveal>
+            <Kicker>Bergabung Sekarang</Kicker>
+            <h2 className="font-anton" style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", color: "#fff", textTransform: "uppercase", lineHeight: 1.05, marginBottom: "1.25rem" }}>
+              SIAP MULAI<br />LATIHANMU?
+            </h2>
+            <p style={{ fontSize: "1.0625rem", color: "rgba(255,255,255,0.7)", marginBottom: "2.25rem", maxWidth: 480, margin: "0 auto 2.25rem" }}>
+              Jangan tunda lagi. Mulai hari ini, ubah kebiasaanmu dan rasakan perbedaannya.
+            </p>
+            <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+              <Link href="/register" className="gym-btn-red" style={{ fontSize: "1rem", padding: "1rem 2rem" }}>
+                Daftar Member Sekarang
+              </Link>
+              <a href={WA_INFO} target="_blank" rel="noopener noreferrer" className="gym-btn-outline-white" style={{ fontSize: "1rem", padding: "1rem 2rem" }}>
+                <MessageCircle size={18} /> Tanya via WhatsApp
+              </a>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
-      <footer
-        className="py-12 px-6 mt-4"
-        style={{
-          borderTop: "2px solid var(--color-border-default)",
-          background: "var(--color-dark-900)",
-        }}
-      >
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-8">
-            {/* Kolom 1 — Logo + Tagline */}
+      {/* ══════════════════════════════════════════════════════════
+          FOOTER
+          ══════════════════════════════════════════════════════════ */}
+      <footer style={{ background: "#0A0A0A", borderTop: "3px solid #B3141C" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "3.5rem 1.5rem 2rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "2.5rem", marginBottom: "2.5rem" }}>
+            {/* Col 1: Logo + tagline */}
             <div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 flex-shrink-0">
-                  <Image src="/logo.png" alt="Cahaya Gym" width={40} height={40} className="object-contain w-full h-full" />
-                </div>
-                <span className="font-bebas text-2xl" style={{ color: "var(--color-brand-orange)" }}>CAHAYA GYM</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "1rem" }}>
+                <Image src="/logo.png" alt="Cahaya Gym" width={36} height={36} style={{ objectFit: "contain" }} />
+                <span className="font-barlow" style={{ color: "#fff", fontSize: "1.125rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                  CAHAYA <span style={{ color: "#B3141C" }}>GYM</span>
+                </span>
               </div>
-              <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
-                Gym dengan fasilitas lengkap dan harga terjangkau di Surabaya. Menemanimu dalam setiap langkah perjalanan fitness.
+              <p style={{ fontSize: "0.875rem", color: "#8A8A82", lineHeight: 1.7 }}>
+                Latihan keras, hasil lebih keras.<br />Gym lokal Beji terpercaya sejak 2019.
               </p>
             </div>
 
-            {/* Kolom 2 — Navigasi Cepat */}
+            {/* Col 2: Navigasi */}
             <div>
-              <div className="font-bebas text-lg mb-3 tracking-wider" style={{ color: "var(--color-text-primary)" }}>NAVIGASI</div>
-              <div className="flex flex-col gap-2">
-                {["Beranda", "Harga", "Tutorial", "Lokasi"].map((item) => (
-                  <a
-                    key={item}
-                    href={`#${item.toLowerCase()}`}
-                    className="text-sm transition-colors hover:text-white"
-                    style={{ color: "var(--color-text-muted)" }}
+              <div className="font-barlow" style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#D4A73B", marginBottom: "1rem" }}>Navigasi</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
+                {navLinks.map(item => (
+                  <a key={item} href={`#${item.toLowerCase()}`}
+                    style={{ fontSize: "0.9375rem", color: "#8A8A82", textDecoration: "none", transition: "color 0.2s" }}
+                    onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
+                    onMouseLeave={e => (e.currentTarget.style.color = "#8A8A82")}
                   >
                     {item}
                   </a>
@@ -1018,38 +539,53 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Kolom 3 — Kontak & Jam */}
+            {/* Col 3: Kontak */}
             <div>
-              <div className="font-bebas text-lg mb-3 tracking-wider" style={{ color: "var(--color-text-primary)" }}>KONTAK</div>
-              <div className="space-y-2 text-sm" style={{ color: "var(--color-text-muted)" }}>
-                <div>
-                  <a href="https://wa.me/6281330256204" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2" style={{ color: "var(--color-status-active)" }}>
-                    <MessageCircle className="w-4 h-4" /> +62 813-3025-6204 (WhatsApp)
-                  </a>
-                </div>
-                <div className="mt-3" style={{ color: "var(--color-text-muted)" }}>
-                  <div className="font-semibold mb-1" style={{ color: "var(--color-text-secondary)" }}>Jam Buka:</div>
-                  <div>Sen–Kam: 06.00–22.00</div>
-                  <div>Jumat: 14.00–22.00</div>
-                  <div>Sab–Min: 07.00–21.00</div>
-                </div>
+              <div className="font-barlow" style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#D4A73B", marginBottom: "1rem" }}>Kontak</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
+                <a href={WA_BASE} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.9375rem", color: "#8A8A82", textDecoration: "none" }}>
+                  <MessageCircle size={14} style={{ display: "inline", verticalAlign: "middle", marginRight: 6 }} />
+                  +62 813-3025-6204
+                </a>
+                <p style={{ fontSize: "0.875rem", color: "#8A8A82", lineHeight: 1.6, margin: 0 }}>
+                  Sen–Kam: 06.00–22.00<br />
+                  Jum: 14.00–22.00<br />
+                  Sab–Min: 07.00–21.00
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Copyright line */}
-          <div
-            className="pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs"
-            style={{ borderTop: "1px solid var(--color-border-subtle)", color: "var(--color-text-muted)" }}
-          >
-            <span>© 2026 Cahaya Gym Beji. Semua hak dilindungi.</span>
-            <div className="flex gap-5">
-              <Link href="/login" className="hover:text-white transition-colors">Login Member</Link>
-              <Link href="/register" className="hover:text-white transition-colors">Daftar Member</Link>
+          {/* Bottom bar */}
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
+            <p style={{ fontSize: "0.8125rem", color: "#555", margin: 0 }}>
+              © {new Date().getFullYear()} Cahaya Gym. Hak cipta dilindungi.
+            </p>
+            <div style={{ display: "flex", gap: "1.25rem" }}>
+              <Link href="/login" style={{ fontSize: "0.8125rem", color: "#555", textDecoration: "none" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#555")}
+              >Login</Link>
+              <Link href="/register" style={{ fontSize: "0.8125rem", color: "#555", textDecoration: "none" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#555")}
+              >Daftar Member</Link>
             </div>
           </div>
         </div>
       </footer>
+
+      {/* Responsive styles */}
+      <style>{`
+        @media (max-width: 767px) {
+          .hidden-mobile { display: none !important; }
+          .show-mobile { display: flex !important; }
+        }
+        @media (min-width: 768px) {
+          .show-mobile { display: none !important; }
+        }
+        .gym-tutorial-card { overflow: hidden; }
+      `}</style>
     </div>
   );
 }
