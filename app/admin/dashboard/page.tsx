@@ -17,11 +17,11 @@ interface StatCardProps {
 
 function StatCard({ label, value, sub, icon, accent = "orange" }: StatCardProps) {
   const colors = {
-    orange: { bg: "rgba(217,79,30,0.1)",  color: "#d94f1e" },
-    green:  { bg: "rgba(74,140,63,0.1)",  color: "#4a8c3f" },
-    red:    { bg: "rgba(192,57,43,0.1)",  color: "#c0392b" },
-    yellow: { bg: "rgba(200,185,122,0.15)", color: "#c8b97a" },
-    blue:   { bg: "rgba(90,122,140,0.1)", color: "#5a7a8c" },
+    orange: { bg: "rgba(179,20,28,0.1)",  color: "#B3141C" },
+    green:  { bg: "rgba(34,197,94,0.1)",  color: "#22c55e" },
+    red:    { bg: "rgba(239,68,68,0.1)",  color: "#ef4444" },
+    yellow: { bg: "rgba(212,167,59,0.15)", color: "#D4A73B" },
+    blue:   { bg: "rgba(59,130,246,0.1)", color: "#3b82f6" },
   };
   const { bg, color } = colors[accent];
 
@@ -116,11 +116,11 @@ export default async function AdminDashboardPage() {
       {/* ── Alerts ── */}
       {(pendingMembers && pendingMembers.length > 0) && (
         <div className="flex items-center gap-3 p-4 rounded-xl mb-6 text-sm"
-          style={{ background: "rgba(200,185,122,0.08)", border: "1px solid rgba(200,185,122,0.25)" }}>
-          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#c8b97a" }} />
+          style={{ background: "rgba(212,167,59,0.08)", border: "1px solid rgba(212,167,59,0.25)" }}>
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#D4A73B" }} />
           <span style={{ color: "var(--color-text-secondary)" }}>
-            <strong style={{ color: "#c8b97a" }}>{pendingMembers.length} member baru</strong> menunggu verifikasi.{" "}
-            <a href="/admin/members?filter=pending" style={{ color: "#c8b97a", textDecoration: "underline" }}>Verifikasi sekarang →</a>
+            <strong style={{ color: "#D4A73B" }}>{pendingMembers.length} member baru</strong> menunggu verifikasi.{" "}
+            <a href="/admin/members?filter=pending" style={{ color: "#D4A73B", textDecoration: "underline" }}>Verifikasi sekarang →</a>
           </span>
         </div>
       )}
@@ -138,11 +138,11 @@ export default async function AdminDashboardPage() {
 
       {(lowStock && lowStock.length > 0) && (
         <div className="flex items-center gap-3 p-4 rounded-xl mb-6 text-sm"
-          style={{ background: "rgba(200,185,122,0.08)", border: "1px solid rgba(200,185,122,0.2)" }}>
-          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#c8b97a" }} />
+          style={{ background: "rgba(212,167,59,0.08)", border: "1px solid rgba(212,167,59,0.2)" }}>
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#D4A73B" }} />
           <span style={{ color: "var(--color-text-secondary)" }}>
-            <strong style={{ color: "#c8b97a" }}>{lowStock.length} produk suplemen</strong> stok tipis.{" "}
-            <a href="/admin/suplemen" style={{ color: "#c8b97a", textDecoration: "underline" }}>Cek stok →</a>
+            <strong style={{ color: "#D4A73B" }}>{lowStock.length} produk suplemen</strong> stok tipis.{" "}
+            <a href="/admin/suplemen" style={{ color: "#D4A73B", textDecoration: "underline" }}>Cek stok →</a>
           </span>
         </div>
       )}
@@ -252,7 +252,7 @@ export default async function AdminDashboardPage() {
                   style={{ background: "var(--color-dark-700)" }}>
                   <div className="flex items-center gap-3">
                     <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                      style={{ background: "rgba(255,107,44,0.15)", color: "var(--color-brand-orange)" }}>
+                      style={{ background: "rgba(179,20,28,0.15)", color: "var(--color-brand-orange)" }}>
                       {((v.nama as string) ?? "?").charAt(0).toUpperCase()}
                     </div>
                     <span className="text-sm" style={{ color: "var(--color-text-secondary)" }}>

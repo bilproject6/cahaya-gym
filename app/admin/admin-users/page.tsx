@@ -29,7 +29,7 @@ export default async function AdminUsersPage() {
 
       <div className="card mb-6 flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-          style={{ background: "rgba(255,107,44,0.1)" }}>
+          style={{ background: "rgba(179,20,28,0.1)" }}>
           <Users className="w-5 h-5" style={{ color: "var(--color-brand-orange)" }} />
         </div>
         <div>
@@ -53,7 +53,7 @@ export default async function AdminUsersPage() {
                 className="flex items-center gap-4 p-4 rounded-xl"
                 style={{ background: "var(--color-dark-700)" }}>
                 <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0"
-                  style={{ background: "linear-gradient(135deg,#ff6b2c,#ffb347)", color: "white" }}>
+                  style={{ background: "#B3141C", color: "white" }}>
                   {admin.nama.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -79,7 +79,7 @@ export default async function AdminUsersPage() {
 
       <div
         className="mt-6 p-4 rounded-xl text-sm"
-        style={{ background: "rgba(255,107,44,0.06)", border: "1px solid rgba(255,107,44,0.12)" }}
+        style={{ background: "rgba(179,20,28,0.06)", border: "1px solid rgba(179,20,28,0.12)" }}
       >
         <p style={{ color: "var(--color-text-secondary)" }}>
           💡 Untuk menambah akun admin baru, daftarkan melalui halaman{" "}

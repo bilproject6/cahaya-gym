@@ -5,7 +5,7 @@ import { formatDate } from "@/lib/utils";
 import {
   Activity, UserCheck, UserPlus, UserX, Edit2,
   CreditCard, Loader2, ChevronLeft, ChevronRight,
-  Filter,
+  Filter, KeyRound,
 } from "lucide-react";
 
 type LogEntry = {
@@ -26,6 +26,7 @@ const ACTION_MAP: Record<string, { label: string; icon: React.ReactNode; color: 
   edit_member: { label: "Edit Data Member", icon: <Edit2 className="w-4 h-4" />, color: "#f59e0b" },
   hapus_member: { label: "Hapus Member", icon: <UserX className="w-4 h-4" />, color: "#ef4444" },
   tambah_member: { label: "Tambah Member", icon: <UserPlus className="w-4 h-4" />, color: "#a855f7" },
+  reset_password: { label: "Reset Password", icon: <KeyRound className="w-4 h-4" />, color: "#B3141C" },
 };
 
 function getActionInfo(action: string) {

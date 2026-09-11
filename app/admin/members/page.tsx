@@ -153,7 +153,7 @@ function ConfirmModal({ options, onCancel }: { options: ConfirmOptions; onCancel
                     ? "rgba(239,68,68,0.1)"
                     : options.confirmStyle === "success"
                     ? "rgba(34,197,94,0.1)"
-                    : "rgba(255,107,44,0.1)",
+                    : "rgba(179,20,28,0.1)",
                 color:
                   options.confirmStyle === "danger"
                     ? "#ef4444"

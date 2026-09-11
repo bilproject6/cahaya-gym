@@ -188,7 +188,7 @@ export default async function MemberDashboardPage() {
                           ? "#ef4444"
                           : status === "akan-habis"
                           ? "linear-gradient(90deg, #f59e0b, #fbbf24)"
-                          : "linear-gradient(90deg, #ff6b2c, #ffb347)",
+                          : "linear-gradient(90deg, #B3141C, #D4A73B)",
                     }}
                   />
                 </div>

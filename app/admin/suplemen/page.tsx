@@ -362,7 +362,7 @@ export default function AdminSuplemenPage() {
                 {/* Header */}
                 <div className="flex items-start justify-between">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: isOutOf ? "rgba(239,68,68,0.1)" : isLow ? "rgba(245,158,11,0.1)" : "rgba(255,107,44,0.1)" }}>
+                    style={{ background: isOutOf ? "rgba(239,68,68,0.1)" : isLow ? "rgba(245,158,11,0.1)" : "rgba(179,20,28,0.1)" }}>
                     <Package className="w-5 h-5" style={{ color: isOutOf ? "#ef4444" : isLow ? "#f59e0b" : "var(--color-brand-orange)" }} />
                   </div>
                   {isOutOf
@@ -407,7 +407,7 @@ export default function AdminSuplemenPage() {
                   <div className="progress-bar" style={{ height: "5px" }}>
                     <div className="progress-fill" style={{
                       width: `${Math.min(100, (s.stok / Math.max(s.stok_minimum * 3, 1)) * 100)}%`,
-                      background: isOutOf ? "#ef4444" : isLow ? "#f59e0b" : "linear-gradient(90deg,#ff6b2c,#ffb347)",
+                      background: isOutOf ? "#ef4444" : isLow ? "#f59e0b" : "linear-gradient(90deg,#B3141C,#D4A73B)",
                     }} />
                   </div>
                 </div>

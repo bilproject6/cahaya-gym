@@ -440,7 +440,7 @@ export default function AdminKeuanganPage() {
                     ))}
                   </div>
                   {/* Total */}
-                  <div className="flex items-center justify-between px-3 py-2 rounded-xl" style={{ background: "rgba(255,107,44,0.06)", border: "1px solid rgba(255,107,44,0.15)" }}>
+                  <div className="flex items-center justify-between px-3 py-2 rounded-xl" style={{ background: "rgba(179,20,28,0.06)", border: "1px solid rgba(179,20,28,0.15)" }}>
                     <span className="text-xs font-bold" style={{ color: "var(--color-text-muted)" }}>TOTAL NON-MEMBER</span>
                     <span className="font-bebas text-lg" style={{ color: "var(--color-brand-orange)" }}>+{formatRupiah(visitorIncome)}</span>
                   </div>
