@@ -52,7 +52,7 @@ export default function LoginPage() {
       }} className="auth-left-panel">
         {/* BG image */}
         <div style={{ position: "absolute", inset: 0 }}>
-          <Image src="/hero-bg.jpg" alt="" fill style={{ objectFit: "cover", objectPosition: "center" }} />
+          <Image src="/hero-bg.jpg" alt="" fill sizes="50vw" style={{ objectFit: "cover", objectPosition: "center" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(0,0,0,0.92) 0%, rgba(120,10,14,0.65) 100%)" }} />
         </div>
 

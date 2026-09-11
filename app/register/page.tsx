@@ -92,7 +92,7 @@ export default function RegisterPage() {
       {/* Panel Kiri — Desktop only */}
       <div style={{ display: "none", position: "relative", flexDirection: "column", justifyContent: "space-between", padding: "3rem", width: "45%", flexShrink: 0, overflow: "hidden" }} className="auth-left-panel">
         <div style={{ position: "absolute", inset: 0 }}>
-          <Image src="/hero-bg.jpg" alt="" fill style={{ objectFit: "cover", objectPosition: "center" }} />
+          <Image src="/hero-bg.jpg" alt="" fill sizes="45vw" style={{ objectFit: "cover", objectPosition: "center" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(0,0,0,0.92) 0%, rgba(120,10,14,0.65) 100%)" }} />
         </div>
         <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: "0.75rem" }}>

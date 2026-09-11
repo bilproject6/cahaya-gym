@@ -480,7 +480,7 @@ export default function HomePage() {
           ══════════════════════════════════════════════════════════ */}
       <section style={{ position: "relative", padding: "7rem 1.5rem", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
-          <Image src="/hero-bg.jpg" alt="" fill style={{ objectFit: "cover", objectPosition: "center" }} />
+          <Image src="/hero-bg.jpg" alt="" fill sizes="100vw" style={{ objectFit: "cover", objectPosition: "center" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(0,0,0,0.92) 0%, rgba(120,10,14,0.75) 100%)" }} />
         </div>
         <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
