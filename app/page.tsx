@@ -409,7 +409,7 @@ export default function HomePage() {
           </Reveal>
 
           <Reveal>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", border: "3px solid #0A0A0A" }}>
+            <div className="landing-tutorial-grid">
               {[
                 { img: "/Bench_Press.gif",      cat: "Dada",             title: "Bench Press" },
                 { img: "/Deadlift.gif",          cat: "Punggung",         title: "Deadlift" },
@@ -420,18 +420,13 @@ export default function HomePage() {
                 { img: "/Leg_Press.gif",         cat: "Kaki",             title: "Leg Press" },
                 { img: "/Kettlebell_Swing.gif",  cat: "Full Body",        title: "Kettlebell Swing" },
               ].map((item, i) => (
-                <div key={i} className="gym-tutorial-card" style={{
-                  position: "relative", overflow: "hidden", aspectRatio: "4/5",
-                  borderRight: i % 4 < 3 ? "3px solid #0A0A0A" : "none",
-                  borderBottom: i < 4 ? "3px solid #0A0A0A" : "none",
-                  cursor: "pointer",
-                }}>
+                <div key={i} className="gym-tutorial-card landing-tutorial-item">
                   <img src={item.img} alt={item.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   {/* Overlay */}
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%)" }} />
-                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "1.25rem 1rem" }}>
-                    <div className="font-barlow" style={{ fontSize: "0.7rem", fontWeight: 700, color: "#D4A73B", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.25rem" }}>{item.cat}</div>
-                    <h3 className="font-anton" style={{ fontSize: "1.5rem", color: "#fff", textTransform: "uppercase" }}>{item.title}</h3>
+                  <div className="landing-tutorial-label">
+                    <div className="font-barlow landing-tutorial-cat">{item.cat}</div>
+                    <h3 className="font-anton landing-tutorial-title">{item.title}</h3>
                   </div>
                 </div>
               ))}

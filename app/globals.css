@@ -1033,3 +1033,82 @@ html.light .badge-pending { background: rgba(109,40,217,0.1); color: #6d28d9; bo
   outline: 3px solid #D4A73B;
   outline-offset: 3px;
 }
+
+/* ══════════════════════════════════════════
+   LANDING PAGE — Tutorial Grid Responsive
+   ══════════════════════════════════════════ */
+.landing-tutorial-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 3px solid #0A0A0A;
+}
+
+.landing-tutorial-item {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  cursor: pointer;
+}
+
+/* Desktop: 4 per row → borders on right (col 0-2) and bottom (row 0) */
+.landing-tutorial-item:nth-child(1),
+.landing-tutorial-item:nth-child(2),
+.landing-tutorial-item:nth-child(3) { border-right: 3px solid #0A0A0A; }
+
+.landing-tutorial-item:nth-child(1),
+.landing-tutorial-item:nth-child(2),
+.landing-tutorial-item:nth-child(3),
+.landing-tutorial-item:nth-child(4) { border-bottom: 3px solid #0A0A0A; }
+
+/* Label container */
+.landing-tutorial-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.25rem 1rem;
+}
+
+/* Category text */
+.landing-tutorial-cat {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #D4A73B;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+/* Title */
+.landing-tutorial-title {
+  font-size: 1.5rem;
+  color: #fff;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+/* ── Mobile: 2 kolom ── */
+@media (max-width: 640px) {
+  .landing-tutorial-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Reset semua border lama */
+  .landing-tutorial-item { border-right: none !important; border-bottom: none !important; }
+
+  /* 2 kolom: border kanan untuk kolom pertama setiap baris */
+  .landing-tutorial-item:nth-child(odd)  { border-right: 3px solid #0A0A0A !important; }
+
+  /* Border bawah kecuali 2 item terakhir */
+  .landing-tutorial-item:nth-child(1),
+  .landing-tutorial-item:nth-child(2),
+  .landing-tutorial-item:nth-child(3),
+  .landing-tutorial-item:nth-child(4),
+  .landing-tutorial-item:nth-child(5),
+  .landing-tutorial-item:nth-child(6) { border-bottom: 3px solid #0A0A0A !important; }
+
+  /* Perkecil label agar tidak terpotong */
+  .landing-tutorial-label { padding: 0.75rem 0.625rem; }
+  .landing-tutorial-cat   { font-size: 0.6rem; letter-spacing: 0.1em; }
+  .landing-tutorial-title { font-size: 1rem; }
+}
