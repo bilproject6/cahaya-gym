@@ -51,6 +51,15 @@ export default function HomePage() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const [memberCount, setMemberCount] = useState<number | null>(null);
+
+  // Fetch real member count from API
+  useEffect(() => {
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then((d) => setMemberCount(d.memberCount ?? null))
+      .catch(() => setMemberCount(null));
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -211,9 +220,9 @@ export default function HomePage() {
         <div style={{ position: "relative", zIndex: 1, background: "rgba(0,0,0,0.65)", borderTop: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(8px)" }}>
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 1.5rem", display: "grid", gridTemplateColumns: "repeat(3, 1fr)" }}>
             {[
-              { num: "500+", label: "Member Aktif" },
+              { num: memberCount !== null ? `${memberCount}+` : "...", label: "Member Aktif" },
               { num: "5+ Tahun", label: "Tahun Berdiri" },
-              { num: "30+ Unit", label: "Alat Gym" },
+              { num: "20+ Unit", label: "Alat Gym" },
             ].map((stat, i) => (
               <div key={i} style={{
                 padding: "1.5rem 1rem", textAlign: "center",
