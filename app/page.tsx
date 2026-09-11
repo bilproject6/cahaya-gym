@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, Star, MapPin, Clock, Phone, ChevronRight, MessageCircle } from "lucide-react";
+import { Menu, X, Star, MapPin, Clock, Phone, ChevronRight, MessageCircle, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/lib/theme-context";
 
 // ─── Scroll-reveal hook ───────────────────────────────────────────────────────
 function useScrollReveal() {
@@ -49,6 +50,7 @@ function Kicker({ children }: { children: React.ReactNode }) {
 export default function HomePage() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -105,6 +107,16 @@ export default function HomePage() {
 
           {/* Desktop CTA */}
           <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }} className="hidden-mobile">
+            {/* Theme toggle */}
+            <button
+              onClick={toggleTheme}
+              title={theme === "dark" ? "Light Mode" : "Dark Mode"}
+              style={{ background: "none", border: "1px solid #333", color: "#aaa", cursor: "pointer", padding: "0.4rem", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "#D4A73B"; e.currentTarget.style.color = "#D4A73B"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "#333"; e.currentTarget.style.color = "#aaa"; }}
+            >
+              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
             <Link href="/login" className="gym-btn-outline-white" style={{ padding: "0.5rem 1.25rem", fontSize: "0.8125rem" }}>Masuk</Link>
             <Link href="/register" className="gym-btn-red" style={{ padding: "0.5rem 1.25rem", fontSize: "0.8125rem" }}>Daftar Member</Link>
           </div>
@@ -138,6 +150,14 @@ export default function HomePage() {
             <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
               <Link href="/login" className="gym-btn-outline-white" style={{ width: "100%", justifyContent: "center" }}>Masuk</Link>
               <Link href="/register" className="gym-btn-red" style={{ width: "100%", justifyContent: "center" }}>Daftar Member</Link>
+              {/* Theme toggle mobile */}
+              <button
+                onClick={toggleTheme}
+                className="font-barlow"
+                style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", background: "#1a1a1a", border: "1px solid #333", color: "#aaa", cursor: "pointer", padding: "0.625rem", fontSize: "0.875rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", width: "100%" }}
+              >
+                {theme === "dark" ? <><Sun size={15} /> Light Mode</> : <><Moon size={15} /> Dark Mode</>}
+              </button>
             </div>
           </div>
         )}

@@ -756,24 +756,27 @@ body {
   }
 }
 
-/* ============ LIGHT MODE — Bold Gym Light ============ */
+/* ============ LIGHT MODE — Bright White Theme ============ */
 html.light {
-  --color-dark-900: #1a1a1a;
-  --color-dark-800: #111111;
-  --color-dark-700: #222222;
-  --color-dark-600: #2a2a2a;
-  --color-dark-500: #333333;
-  --color-dark-400: #3d3d3d;
-  --color-dark-300: #4a4a4a;
-  --color-dark-200: #555555;
-  --color-text-primary:   #f5f5f5;
-  --color-text-secondary: #D4A73B;
-  --color-text-muted:     #8A8A82;
-  --color-border-default: #2a2a2a;
-  --color-border-subtle:  #1f1f1f;
+  --color-dark-900: #ffffff;   /* sidebar bg — putih bersih */
+  --color-dark-800: #f4f4f5;   /* page bg — abu sangat muda */
+  --color-dark-700: #e9e9eb;   /* card bg */
+  --color-dark-600: #dededf;   /* card hover / input bg */
+  --color-dark-500: #d4d4d6;
+  --color-dark-400: #c4c4c6;
+  --color-dark-300: #a8a8ab;
+  --color-dark-200: #8c8c90;
+  --color-text-primary:   #0A0A0A;   /* teks utama — hitam */
+  --color-text-secondary: #B3141C;   /* aksen merah gym */
+  --color-text-muted:     #6b6b70;   /* teks redup */
+  --color-border-default: #d0d0d2;
+  --color-border-subtle:  #e4e4e6;
   --color-brand-orange:   #B3141C;
-  --color-status-active:  #22c55e;
-  --color-status-danger:  #ef4444;
+  --color-brand-gold:     #b8921f;
+  --color-status-active:  #16a34a;
+  --color-status-warning: #d97706;
+  --color-status-danger:  #dc2626;
+  --color-status-info:    #2563eb;
 }
 
 html.light body {
@@ -781,17 +784,73 @@ html.light body {
   color: var(--color-text-primary);
 }
 
-html.light .modal {
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+/* Scrollbar light */
+html.light ::-webkit-scrollbar-track { background: #e9e9eb; }
+html.light ::-webkit-scrollbar-thumb { background: #c4c4c6; }
+html.light ::-webkit-scrollbar-thumb:hover { background: #a8a8ab; }
+
+/* Cards */
+html.light .card {
+  background: var(--color-dark-700);
+  border-color: var(--color-border-default);
+}
+html.light .card-stat {
+  background: var(--color-dark-700);
+  border-color: var(--color-border-default);
 }
 
-html.light .modal-overlay {
-  background: rgba(0, 0, 0, 0.5);
+/* Input */
+html.light .input {
+  background: #ffffff;
+  border-color: var(--color-border-default);
+  color: var(--color-text-primary);
 }
+html.light .input:focus {
+  border-color: rgba(179,20,28,0.5);
+  box-shadow: 0 0 0 3px rgba(179,20,28,0.08);
+}
+html.light .input::placeholder { color: var(--color-text-muted); }
 
+/* Table */
+html.light .data-table thead th { color: var(--color-text-muted); }
+html.light .data-table thead tr { border-color: var(--color-border-default); }
+html.light .data-table tbody tr { border-color: var(--color-border-subtle); }
+html.light .data-table tbody tr:hover { background: rgba(179,20,28,0.03); }
+html.light .data-table tbody td { color: var(--color-text-primary); }
+
+/* Sidebar */
+html.light .sidebar {
+  background: var(--color-dark-900);
+  border-right-color: var(--color-border-default);
+}
+html.light .sidebar-nav-item { color: var(--color-text-muted); }
 html.light .sidebar-nav-item:hover {
-  background: rgba(217, 79, 30, 0.08);
+  background: rgba(179,20,28,0.06);
+  color: var(--color-text-primary);
 }
+html.light .sidebar-nav-item.active {
+  background: rgba(179,20,28,0.1);
+  color: #B3141C;
+}
+html.light .sidebar-nav-item.active::before { background: #B3141C; }
+
+/* Modal */
+html.light .modal {
+  background: var(--color-dark-900);
+  border-color: var(--color-border-default);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+html.light .modal-overlay { background: rgba(0,0,0,0.4); }
+
+/* Badges */
+html.light .badge-active  { background: rgba(22,163,74,0.1);  color: #16a34a; border-color: rgba(22,163,74,0.2); }
+html.light .badge-warning { background: rgba(217,119,6,0.1);  color: #d97706; border-color: rgba(217,119,6,0.2); }
+html.light .badge-danger  { background: rgba(220,38,38,0.1);  color: #dc2626; border-color: rgba(220,38,38,0.2); }
+html.light .badge-info    { background: rgba(37,99,235,0.1);  color: #2563eb; border-color: rgba(37,99,235,0.2); }
+html.light .badge-orange  { background: rgba(179,20,28,0.1);  color: #B3141C; border-color: rgba(179,20,28,0.2); }
+
+/* Progress bar */
+html.light .progress-bar { background: var(--color-dark-500); }
 
 /* ══════════════════════════════════════════
    BOLD GYM REDESIGN — Landing Page Styles
