@@ -382,14 +382,19 @@ export default function HomePage() {
           <Reveal>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", border: "3px solid #0A0A0A" }}>
               {[
-                { img: "/tutorial-squat.jpg", cat: "Kaki", title: "Squat" },
-                { img: "/tutorial-bench-press.jpg", cat: "Dada", title: "Bench Press" },
-                { img: "/tutorial-deadlift.jpg", cat: "Punggung", title: "Deadlift" },
-                { img: "/tutorial-pullup.jpg", cat: "Punggung & Bisep", title: "Pull-Up" },
+                { img: "/Bench_Press.gif",      cat: "Dada",           title: "Bench Press" },
+                { img: "/Deadlift.gif",          cat: "Punggung",       title: "Deadlift" },
+                { img: "/Lat_Pulldown.gif",      cat: "Punggung & Bisep", title: "Lat Pulldown" },
+                { img: "/Bicep_Curl.gif",        cat: "Bisep",          title: "Bicep Curl" },
+                { img: "/Tricep_Pushdown.gif",   cat: "Trisep",         title: "Tricep Pushdown" },
+                { img: "/Cable_Crossover.gif",   cat: "Dada",           title: "Cable Crossover" },
+                { img: "/Leg_Press.gif",         cat: "Kaki",           title: "Leg Press" },
+                { img: "/Kettlebell_Swing.gif",  cat: "Full Body",      title: "Kettlebell Swing" },
               ].map((item, i) => (
                 <div key={i} className="gym-tutorial-card" style={{
                   position: "relative", overflow: "hidden", aspectRatio: "4/5",
-                  borderRight: i < 3 ? "3px solid #0A0A0A" : "none",
+                  borderRight: i % 4 < 3 ? "3px solid #0A0A0A" : "none",
+                  borderBottom: i < 4 ? "3px solid #0A0A0A" : "none",
                   cursor: "pointer",
                 }}>
                   <img src={item.img} alt={item.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
