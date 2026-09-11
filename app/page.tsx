@@ -114,7 +114,7 @@ export default function HomePage() {
             id="hamburger-btn"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
-            style={{ display: "none", background: "none", border: "none", color: "#fff", cursor: "pointer", padding: "0.5rem" }}
+            style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", padding: "0.5rem" }}
             className="show-mobile"
           >
             {mobileOpen ? <X size={26} /> : <Menu size={26} />}
@@ -247,7 +247,7 @@ export default function HomePage() {
               { num: "04", title: "Harga Terjangkau", desc: "Member bulanan hanya Rp100.000, non-member Rp10.000/kunjungan. Gym berkualitas tanpa harga mahal." },
             ].map((item, i) => (
               <Reveal key={i} delay={i * 100}>
-                <div style={{
+                <div className="gym-feature-col" style={{
                   padding: "2.5rem 2rem",
                   borderRight: i < 3 ? "1px solid rgba(255,255,255,0.08)" : "none",
                   height: "100%",
@@ -277,7 +277,7 @@ export default function HomePage() {
           <Reveal>
             <div style={{ border: "3px solid #0A0A0A", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
               {/* Non-member */}
-              <div style={{ padding: "2.5rem 2rem", background: "#fff", borderRight: "3px solid #0A0A0A" }}>
+              <div className="gym-pricing-left" style={{ padding: "2.5rem 2rem", background: "#fff", borderRight: "3px solid #0A0A0A" }}>
                 <div className="font-barlow" style={{ fontSize: "0.8125rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#8A8A82", marginBottom: "1rem" }}>Non-Member</div>
                 <div style={{ display: "flex", alignItems: "flex-end", gap: "0.375rem", marginBottom: "0.375rem" }}>
                   <span className="font-anton" style={{ fontSize: "3.5rem", color: "#0A0A0A", lineHeight: 1 }}>10K</span>
@@ -341,12 +341,12 @@ export default function HomePage() {
           </Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "0" }}>
             {[
-              { step: "01", title: "Datang ke Gym", desc: "Kunjungi Cahaya Gym di Beji. Tidak perlu janji dulu — langsung datang dan kami siap menyambut." },
+              { step: "01", title: "Datang ke Gym", desc: "Kunjungi Cahaya Gym di Surabaya. Tidak perlu janji dulu — langsung datang dan kami siap menyambut." },
               { step: "02", title: "Pilih Paket", desc: "Pilih paket Non-Member (Rp10K/kunjungan) atau Member Bulanan (Rp100K/bulan) sesuai kebutuhanmu." },
               { step: "03", title: "Mulai Latihan", desc: "Langsung gunakan semua fasilitas — alat lengkap, suasana bersemangat, komunitas yang mendukung." },
             ].map((item, i) => (
               <Reveal key={i} delay={i * 120}>
-                <div style={{
+                <div className="gym-step-col" style={{
                   padding: "2.5rem 2rem",
                   borderRight: i < 2 ? "1px solid rgba(255,255,255,0.08)" : "none",
                   textAlign: "center", height: "100%",
@@ -421,7 +421,7 @@ export default function HomePage() {
           <Reveal>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", border: "3px solid rgba(255,255,255,0.12)" }}>
               {/* Info */}
-              <div style={{ padding: "2.5rem 2rem", background: "#0A0A0A", borderRight: "3px solid rgba(255,255,255,0.12)" }}>
+              <div className="gym-location-left" style={{ padding: "2.5rem 2rem", background: "#0A0A0A", borderRight: "3px solid rgba(255,255,255,0.12)" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
                   <div>
                     <div className="font-barlow" style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", color: "#D4A73B", textTransform: "uppercase", marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.375rem" }}>
@@ -580,6 +580,11 @@ export default function HomePage() {
         @media (max-width: 767px) {
           .hidden-mobile { display: none !important; }
           .show-mobile { display: flex !important; }
+          .gym-feature-col { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.08); }
+          .gym-tutorial-card { border-right: none !important; border-bottom: 3px solid #0A0A0A; }
+          .gym-pricing-left { border-right: none !important; border-bottom: 3px solid #0A0A0A; }
+          .gym-step-col { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.08); }
+          .gym-location-left { border-right: none !important; border-bottom: 3px solid rgba(255,255,255,0.12); }
         }
         @media (min-width: 768px) {
           .show-mobile { display: none !important; }
