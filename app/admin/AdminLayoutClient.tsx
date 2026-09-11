@@ -76,8 +76,8 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
           <Image src="/logo.png" alt="Cahaya Gym" width={36} height={36} className="object-contain" />
         </div>
         <div>
-          <div className="font-barlow" style={{ color: "#fff", fontSize: "1.1rem", fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", lineHeight: 1.1 }}>
-            CAHAYA <span style={{ color: "#B3141C" }}>GYM</span>
+          <div className="font-barlow" style={{ color: "var(--color-brand-orange)", fontSize: "1.1rem", fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", lineHeight: 1.1 }}>
+            CAHAYA <span style={{ color: "#D4A73B" }}>GYM</span>
           </div>
           <div style={{ fontSize: "0.65rem", letterSpacing: "0.15em", color: "#8A8A82", textTransform: "uppercase", fontFamily: "'Barlow Condensed', sans-serif" }}>ADMIN PANEL</div>
         </div>
