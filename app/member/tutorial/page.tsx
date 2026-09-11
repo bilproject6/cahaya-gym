@@ -1,53 +1,22 @@
-import { createClient } from "@/lib/supabase/server";
+"use client";
+
 import Image from "next/image";
-import { Play, Dumbbell } from "lucide-react";
 
-export default async function MemberTutorialPage() {
-  const supabase = await createClient();
+const TUTORIALS = [
+  { img: "/Bench_Press.gif",     cat: "Dada",             title: "Bench Press",      tips: ["Punggung menempel bench", "Grip selebar bahu", "Turunkan perlahan, angkat eksplosif"] },
+  { img: "/Deadlift.gif",        cat: "Punggung",         title: "Deadlift",          tips: ["Punggung netral, tidak bungkuk", "Bar dekat kaki sepanjang gerakan", "Dorong lantai dengan kaki"] },
+  { img: "/Lat_Pulldown.gif",    cat: "Punggung & Bisep", title: "Lat Pulldown",      tips: ["Tarik ke dada bagian atas", "Siku mengarah ke bawah", "Kontrol saat kembali ke atas"] },
+  { img: "/Bicep_Curl.gif",      cat: "Bisep",            title: "Bicep Curl",        tips: ["Siku tidak bergerak maju", "Genggam erat", "Kontraksikan puncak gerakan"] },
+  { img: "/Tricep_Pushdown.gif", cat: "Trisep",           title: "Tricep Pushdown",   tips: ["Siku tetap di samping tubuh", "Dorongan penuh hingga ekstensi", "Naik perlahan untuk kontrol"] },
+  { img: "/Cable_Crossover.gif", cat: "Dada",             title: "Cable Crossover",   tips: ["Badan sedikit maju", "Gerakan melingkar lebar", "Fokus squeeze di tengah dada"] },
+  { img: "/Leg_Press.gif",       cat: "Kaki",             title: "Leg Press",         tips: ["Jangan kunci lutut di atas", "Tumit menempel platform", "Turunkan terkontrol"] },
+  { img: "/Kettlebell_Swing.gif",cat: "Full Body",        title: "Kettlebell Swing",  tips: ["Gerak dari pinggul, bukan bahu", "Core kencang sepanjang gerakan", "Ayunan hingga sejajar bahu"] },
+];
 
-  const { data: tutorials } = await supabase
-    .from("tutorials")
-    .select("id, judul, deskripsi, tipe_file, url_file, thumbnail_url, kategori_gerakan")
-    .eq("is_active", true)
-    .order("urutan", { ascending: true });
-
-  const staticTutorials = [
-    {
-      id: "st1",
-      judul: "Bench Press",
-      deskripsi: "Latihan dasar untuk membentuk otot dada, bahu, dan triceps. Cocok untuk pemula hingga mahir.",
-      kategori_gerakan: "Dada & Triceps",
-      image: "/tutorial-bench-press.jpg",
-      tips: ["Punggung tetap menempel bench", "Grip selebar bahu", "Turunkan perlahan, angkat eksplosif"],
-    },
-    {
-      id: "st2",
-      judul: "Barbell Squat",
-      deskripsi: "Raja latihan kaki. Melatih quads, hamstrings, gluteus, dan seluruh otot core secara bersamaan.",
-      kategori_gerakan: "Kaki & Core",
-      image: "/tutorial-squat.jpg",
-      tips: ["Punggung lurus, dada tegak", "Lutut mengikuti arah jari kaki", "Turun hingga paha sejajar lantai"],
-    },
-    {
-      id: "st3",
-      judul: "Deadlift",
-      deskripsi: "Latihan compound yang melatih hampir seluruh tubuh, terutama punggung bawah dan kaki.",
-      kategori_gerakan: "Punggung & Kaki",
-      image: "/tutorial-deadlift.jpg",
-      tips: ["Punggung netral (tidak membungkuk)", "Bar dekat dengan kaki sepanjang gerakan", "Dorong lantai dengan kaki saat angkat"],
-    },
-    {
-      id: "st4",
-      judul: "Pull-Up",
-      deskripsi: "Latihan bodyweight terbaik untuk melatih otot punggung lebar (lat) dan biceps.",
-      kategori_gerakan: "Punggung & Biceps",
-      image: "/tutorial-pullup.jpg",
-      tips: ["Grip lebih lebar dari bahu", "Tarik dagu melewati bar", "Turunkan perlahan untuk kontrol maksimal"],
-    },
-  ];
-
+export default function MemberTutorialPage() {
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-5xl mx-auto">
+      {/* Header */}
       <div className="mb-8">
         <h1 className="font-bebas text-4xl mb-1" style={{ color: "var(--color-text-primary)" }}>
           TUTORIAL GERAKAN
@@ -57,89 +26,100 @@ export default async function MemberTutorialPage() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-5">
-        {staticTutorials.map((tutorial) => (
+      {/* Grid 4×2 — sama persis dengan landing page */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          border: "3px solid var(--color-border-default)",
+          borderRadius: "8px",
+          overflow: "hidden",
+        }}
+        className="tutorial-grid"
+      >
+        {TUTORIALS.map((item, i) => (
           <div
-            key={tutorial.id}
-            className="card overflow-hidden group"
-            style={{ padding: 0 }}
+            key={i}
+            className="gym-tutorial-card group"
+            style={{
+              position: "relative",
+              overflow: "hidden",
+              aspectRatio: "4/5",
+              borderRight: i % 4 < 3 ? "2px solid var(--color-border-default)" : "none",
+              borderBottom: i < 4 ? "2px solid var(--color-border-default)" : "none",
+              cursor: "default",
+            }}
           >
-            {/* Image */}
-            <div className="relative h-48 overflow-hidden">
-              <Image
-                src={tutorial.image}
-                alt={tutorial.judul}
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-              <div className="absolute bottom-3 left-3">
-                <span className="badge badge-orange">{tutorial.kategori_gerakan}</span>
+            {/* GIF */}
+            <img
+              src={item.img}
+              alt={item.title}
+              loading="lazy"
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+
+            {/* Dark overlay — always visible */}
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)" }} />
+
+            {/* Label bawah */}
+            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "1.25rem 1rem" }}>
+              <div
+                className="font-barlow"
+                style={{ fontSize: "0.7rem", fontWeight: 700, color: "#D4A73B", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.2rem" }}
+              >
+                {item.cat}
               </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-5">
-              <h3 className="font-bebas text-2xl mb-2" style={{ color: "var(--color-text-primary)" }}>
-                {tutorial.judul}
+              <h3
+                className="font-anton"
+                style={{ fontSize: "1.25rem", color: "#fff", textTransform: "uppercase", lineHeight: 1.1, marginBottom: "0.5rem" }}
+              >
+                {item.title}
               </h3>
-              <p className="text-sm mb-4 leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
-                {tutorial.deskripsi}
-              </p>
 
-              {/* Tips */}
-              <div className="space-y-2">
-                <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: "var(--color-brand-orange)" }}>
-                  Tips Penting
-                </div>
-                {tutorial.tips.map((tip, i) => (
-                  <div key={i} className="flex items-start gap-2 text-xs" style={{ color: "var(--color-text-secondary)" }}>
-                    <span
-                      className="w-4 h-4 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5 font-bold"
-                      style={{ background: "rgba(255,107,44,0.15)", color: "var(--color-brand-orange)" }}
-                    >
-                      {i + 1}
-                    </span>
-                    {tip}
-                  </div>
-                ))}
+              {/* Tips — muncul saat hover */}
+              <div
+                className="tutorial-tips"
+                style={{
+                  maxHeight: 0,
+                  overflow: "hidden",
+                  transition: "max-height 0.35s ease, opacity 0.3s ease",
+                  opacity: 0,
+                }}
+              >
+                <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+                  {item.tips.map((tip, ti) => (
+                    <li key={ti} style={{ display: "flex", alignItems: "flex-start", gap: "0.4rem", fontSize: "0.72rem", color: "rgba(255,255,255,0.82)", lineHeight: 1.4 }}>
+                      <span style={{ color: "#D4A73B", flexShrink: 0, fontWeight: 700 }}>›</span>
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Supabase tutorials (dynamic) */}
-      {tutorials && tutorials.length > 0 && (
-        <div className="mt-6">
-          <h2 className="font-bebas text-2xl mb-4" style={{ color: "var(--color-text-primary)" }}>
-            TUTORIAL TAMBAHAN
-          </h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            {tutorials.map((t) => (
-              <div key={t.id} className="card flex items-center gap-4">
-                <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: "rgba(255,107,44,0.1)" }}
-                >
-                  {t.tipe_file === "mp4" ? (
-                    <Play className="w-5 h-5" style={{ color: "var(--color-brand-orange)" }} />
-                  ) : (
-                    <Dumbbell className="w-5 h-5" style={{ color: "var(--color-brand-orange)" }} />
-                  )}
-                </div>
-                <div>
-                  <div className="font-semibold text-sm mb-1" style={{ color: "var(--color-text-primary)" }}>
-                    {t.judul}
-                  </div>
-                  <div className="text-xs" style={{ color: "var(--color-text-muted)" }}>{t.kategori_gerakan}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Mobile: 2 kolom */}
+      <style>{`
+        @media (max-width: 768px) {
+          .tutorial-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        .gym-tutorial-card:hover .tutorial-tips {
+          max-height: 120px !important;
+          opacity: 1 !important;
+        }
+      `}</style>
+
+      {/* Catatan */}
+      <p
+        className="text-xs text-center mt-6"
+        style={{ color: "var(--color-text-muted)" }}
+      >
+        Arahkan kursor ke kartu untuk melihat tips teknik gerakan.
+      </p>
     </div>
   );
 }
