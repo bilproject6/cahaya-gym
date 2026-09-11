@@ -852,6 +852,55 @@ html.light .badge-orange  { background: rgba(179,20,28,0.1);  color: #B3141C; bo
 /* Progress bar */
 html.light .progress-bar { background: var(--color-dark-500); }
 
+/* ── Buttons ── */
+/* btn-primary: red bg, white text — oke di kedua mode */
+html.light .btn-primary {
+  background: #B3141C;
+  color: #ffffff;
+  border-color: #8f0f15;
+}
+html.light .btn-primary:hover { background: #951018; box-shadow: 0 6px 20px rgba(179,20,28,0.3); }
+
+/* btn-secondary: border + text menjadi merah */
+html.light .btn-secondary {
+  color: #B3141C;
+  border-color: #B3141C;
+}
+html.light .btn-secondary:hover { background: rgba(179,20,28,0.08); border-color: #8f0f15; }
+
+/* btn-ghost: teks gelap, border gelap */
+html.light .btn-ghost {
+  color: var(--color-text-primary);
+  border-color: rgba(10,10,10,0.3);
+}
+html.light .btn-ghost:hover {
+  background: rgba(10,10,10,0.06);
+  color: var(--color-text-primary);
+  border-color: rgba(10,10,10,0.5);
+}
+
+/* btn-danger & btn-success — warna sudah pakai rgba, oke */
+html.light .btn-danger  { background: rgba(220,38,38,0.08);  color: #dc2626; border-color: rgba(220,38,38,0.25); }
+html.light .btn-success { background: rgba(22,163,74,0.08);  color: #16a34a; border-color: rgba(22,163,74,0.25); }
+
+/* ── Input focus ── */
+html.light .input:focus {
+  border-color: rgba(179,20,28,0.5);
+  box-shadow: 0 0 0 3px rgba(179,20,28,0.08);
+}
+
+/* ── Table row border ── */
+html.light .data-table tbody tr {
+  border-bottom-color: var(--color-border-subtle);
+}
+html.light .data-table tbody tr:hover {
+  background: rgba(179,20,28,0.03);
+}
+
+/* ── Badge orange (lama masih #ff6b2c) ── */
+html.light .badge-orange  { background: rgba(179,20,28,0.1); color: #B3141C; border-color: rgba(179,20,28,0.2); }
+html.light .badge-pending { background: rgba(109,40,217,0.1); color: #6d28d9; border-color: rgba(109,40,217,0.2); }
+
 /* ══════════════════════════════════════════
    BOLD GYM REDESIGN — Landing Page Styles
    ══════════════════════════════════════════ */
