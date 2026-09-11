@@ -6,7 +6,7 @@ import {
   Users, Search, CheckCircle, XCircle, Clock,
   AlertTriangle, Plus, Trash2, Loader2, X, UserCheck,
   CreditCard, Edit2, Calendar, Phone, ShieldAlert, UserPlus, Banknote,
-  FileDown,
+  FileDown, KeyRound, Eye, EyeOff,
 } from "lucide-react";
 import { exportToExcel, fmtDate } from "@/lib/export";
 
@@ -58,6 +58,64 @@ function StatusBadge({ member }: { member: Member }) {
   if (days <= 3) return <span className="badge badge-warning"><AlertTriangle className="w-3 h-3" /> Habis {days}h</span>;
   if (days <= 7) return <span className="badge badge-warning"><Clock className="w-3 h-3" /> {days}h lagi</span>;
   return <span className="badge badge-active"><CheckCircle className="w-3 h-3" /> Aktif</span>;
+}
+
+// ════════════════════════════════════════
+// RESET PASSWORD MODAL
+// ════════════════════════════════════════
+function ResetPasswordModal({ nama, onConfirm, onCancel }: { nama: string; onConfirm: (pw: string) => void; onCancel: () => void }) {
+  const [pw, setPw] = useState("");
+  const [showPw, setShowPw] = useState(false);
+  const [err, setErr] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pw.length < 8) { setErr("Password minimal 8 karakter."); return; }
+    onConfirm(pw);
+  };
+
+  return (
+    <div className="modal-overlay" style={{ zIndex: 200 }}>
+      <div className="modal" style={{ maxWidth: 400 }}>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <KeyRound className="w-5 h-5" style={{ color: "var(--color-brand-orange)" }} />
+            <h3 className="text-base font-bold" style={{ color: "var(--color-text-primary)" }}>Reset Password</h3>
+          </div>
+          <button onClick={onCancel} className="p-1 rounded" style={{ color: "var(--color-text-muted)" }}><X className="w-4 h-4" /></button>
+        </div>
+        <p className="text-sm mb-4" style={{ color: "var(--color-text-secondary)" }}>
+          Buat password baru untuk member <strong style={{ color: "var(--color-text-primary)" }}>{nama}</strong>. Password akan langsung aktif.
+        </p>
+        {err && <p className="text-xs mb-3" style={{ color: "var(--color-status-danger)" }}>{err}</p>}
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div>
+            <label className="input-label">Password Baru</label>
+            <div className="relative">
+              <input
+                type={showPw ? "text" : "password"}
+                className="input pr-10"
+                placeholder="Min. 8 karakter"
+                value={pw}
+                onChange={e => { setPw(e.target.value); setErr(""); }}
+                autoFocus
+                required
+              />
+              <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: "var(--color-text-muted)" }} onClick={() => setShowPw(!showPw)}>
+                {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+          <div className="flex gap-2 pt-1">
+            <button type="button" onClick={onCancel} className="btn-ghost flex-1 justify-center">Batal</button>
+            <button type="submit" className="btn-primary flex-1 justify-center">
+              <KeyRound className="w-4 h-4" /> Reset Password
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }
 
 // ════════════════════════════════════════
@@ -355,6 +413,7 @@ export default function AdminMembersPage() {
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
   const [confirmOpts, setConfirmOpts] = useState<ConfirmOptions | null>(null);
   const [paymentAction, setPaymentAction] = useState<PaymentAction | null>(null);
+  const [resetPasswordTarget, setResetPasswordTarget] = useState<{ userId: string; nama: string } | null>(null);
 
   const showToast = (msg: string, type: "success" | "error" = "success") => {
     setToast({ msg, type });
@@ -517,6 +576,24 @@ export default function AdminMembersPage() {
     setActionLoading(null);
   };
 
+  // ── Reset Password ──
+  const execResetPassword = async (userId: string, nama: string, newPassword: string) => {
+    try {
+      const res = await fetch("/api/admin/members", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "reset_password", userId, memberNama: nama, newPassword }),
+      });
+      const j = await res.json();
+      if (res.ok) {
+        showToast(`Password ${nama} berhasil direset ✓`);
+        setResetPasswordTarget(null);
+      } else {
+        showToast(j.error || "Gagal reset password", "error");
+      }
+    } catch { showToast("Gagal reset password", "error"); }
+  };
+
 
 
   const filters: { key: FilterType; label: string }[] = [
@@ -552,6 +629,15 @@ export default function AdminMembersPage() {
 
       {/* Confirm Modal (hapus member) */}
       {confirmOpts && <ConfirmModal options={confirmOpts} onCancel={() => setConfirmOpts(null)} />}
+
+      {/* Reset Password Modal */}
+      {resetPasswordTarget && (
+        <ResetPasswordModal
+          nama={resetPasswordTarget.nama}
+          onConfirm={(pw) => execResetPassword(resetPasswordTarget.userId, resetPasswordTarget.nama, pw)}
+          onCancel={() => setResetPasswordTarget(null)}
+        />
+      )}
 
       {/* Payment Confirm Modal (aktivasi/perpanjang) */}
       {paymentAction && (
@@ -692,6 +778,17 @@ export default function AdminMembersPage() {
                           ? <Loader2 className="w-3 h-3 animate-spin" />
                           : <><CreditCard className="w-3 h-3" /> Perpanjang</>
                         }
+                      </button>
+                    )}
+
+                    {/* Reset Password button */}
+                    {member.profiles?.is_verified && (
+                      <button
+                        onClick={() => setResetPasswordTarget({ userId: member.user_id, nama: member.profiles?.nama || "" })}
+                        className="btn-ghost py-1.5 px-3 text-xs"
+                        title="Reset password member"
+                      >
+                        <KeyRound className="w-3 h-3" />
                       </button>
                     )}
 

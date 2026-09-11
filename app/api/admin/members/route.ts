@@ -291,6 +291,34 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ success: true });
     }
 
+    // ── reset_password ────────────────────────────────────────────────────────
+    if (action === "reset_password") {
+      const { userId, newPassword, memberNama } = body;
+
+      if (!userId || !newPassword) {
+        return NextResponse.json({ error: "userId dan newPassword wajib diisi." }, { status: 400 });
+      }
+      if (newPassword.length < 8) {
+        return NextResponse.json({ error: "Password minimal 8 karakter." }, { status: 400 });
+      }
+
+      const admin = createAdminClient();
+      const { error: resetError } = await admin.auth.admin.updateUserById(userId, { password: newPassword });
+
+      if (resetError) {
+        console.error("Reset password error:", resetError);
+        return NextResponse.json({ error: "Gagal mereset password. Coba lagi." }, { status: 500 });
+      }
+
+      await logAction(
+        auth.user!.id, auth.adminName,
+        "reset_password", "member", userId, memberNama || userId,
+        `Password direset oleh admin`
+      );
+
+      return NextResponse.json({ success: true });
+    }
+
     return NextResponse.json({ error: "Action tidak valid." }, { status: 400 });
   } catch (e) {
     console.error("PATCH /api/admin/members error:", e);
