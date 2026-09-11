@@ -433,7 +433,7 @@ export default function HomePage() {
                       <MapPin size={12} /> Lokasi
                     </div>
                     <p style={{ fontSize: "0.9375rem", color: "rgba(255,255,255,0.85)", lineHeight: 1.6 }}>
-                      Surabaya, Jawa Timur
+                      Jl. Beji PDAM No.56,<br />Surabaya, Jawa Timur
                     </p>
                   </div>
                   <div>
