@@ -16,28 +16,28 @@
   --gym-grey:   #8A8A82;
   --gym-white:  #FFFFFF;
 
-  /* ═══ MILITARY STRENGTH PALETTE (admin/member — backward compat) ═══ */
-  --color-brand-orange: #d94f1e;
-  --color-brand-orange-light: #e8693c;
-  --color-brand-orange-dark: #b83d10;
-  --color-brand-gold: #c8b97a;
-  --color-dark-900: #0c1208;
-  --color-dark-800: #1a2210;
-  --color-dark-700: #1e2b14;
-  --color-dark-600: #243018;
-  --color-dark-500: #2c3a1e;
-  --color-dark-400: #354626;
-  --color-dark-300: #3f5430;
-  --color-dark-200: #4a6238;
-  --color-text-primary: #f0ead6;
-  --color-text-secondary: #c8b97a;
-  --color-text-muted: #7a8c6a;
-  --color-status-active: #4a8c3f;
-  --color-status-warning: #c8b97a;
-  --color-status-danger: #c0392b;
-  --color-status-info: #4a7a8c;
-  --color-border-default: #3a5a2e;
-  --color-border-subtle: #2c3a1e;
+  /* ═══ BOLD GYM PALETTE (admin/member) ═══ */
+  --color-brand-orange:       #B3141C;  /* merah gym */
+  --color-brand-orange-light: #cc1f28;
+  --color-brand-orange-dark:  #8f0f15;
+  --color-brand-gold:         #D4A73B;  /* emas */
+  --color-dark-900: #111111;  /* sidebar bg */
+  --color-dark-800: #0A0A0A;  /* page bg */
+  --color-dark-700: #1a1a1a;  /* card bg */
+  --color-dark-600: #222222;  /* card hover */
+  --color-dark-500: #2a2a2a;
+  --color-dark-400: #333333;
+  --color-dark-300: #3d3d3d;
+  --color-dark-200: #4a4a4a;
+  --color-text-primary:   #ffffff;
+  --color-text-secondary: #D4A73B;
+  --color-text-muted:     #8A8A82;
+  --color-status-active:  #22c55e;
+  --color-status-warning: #f59e0b;
+  --color-status-danger:  #ef4444;
+  --color-status-info:    #3b82f6;
+  --color-border-default: #2a2a2a;
+  --color-border-subtle:  #1f1f1f;
 }
 
 
@@ -386,9 +386,9 @@ body {
 }
 
 .card-stat {
-  background: var(--color-dark-600);
+  background: var(--color-dark-700);
   border: 2px solid var(--color-border-default);
-  border-radius: 8px;
+  border-radius: 0;
   padding: 1.25rem 1.5rem;
   position: relative;
   overflow: hidden;
@@ -402,7 +402,7 @@ body {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #d94f1e, #c8b97a);
+  background: linear-gradient(90deg, #B3141C, #D4A73B);
   opacity: 0;
   transition: opacity 0.2s ease;
 }
@@ -584,36 +584,38 @@ body {
   gap: 0.75rem;
   padding: 0.7rem 1rem;
   min-height: 44px;
-  border-radius: 6px;
-  color: var(--color-text-secondary);
+  border-radius: 0;
+  color: var(--color-text-muted);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
   position: relative;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  font-family: "Barlow Condensed", sans-serif;
+  text-transform: uppercase;
 }
 
 .sidebar-nav-item:hover {
-  background: rgba(217, 79, 30, 0.08);
-  color: var(--color-text-primary);
+  background: rgba(179, 20, 28, 0.08);
+  color: #ffffff;
 }
 
 .sidebar-nav-item.active {
-  background: rgba(217, 79, 30, 0.12);
-  color: #d94f1e;
+  background: rgba(179, 20, 28, 0.15);
+  color: #B3141C;
 }
 
 .sidebar-nav-item.active::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 20%;
-  bottom: 20%;
+  top: 0;
+  bottom: 0;
   width: 3px;
-  background: #d94f1e;
-  border-radius: 0 3px 3px 0;
+  background: #B3141C;
+  border-radius: 0;
 }
 
 /* ============ MODAL ============ */
@@ -754,24 +756,24 @@ body {
   }
 }
 
-/* ============ LIGHT MODE — Khaki/Canvas Terang ============ */
+/* ============ LIGHT MODE — Bold Gym Light ============ */
 html.light {
-  --color-dark-900: #f5f0e8;
-  --color-dark-800: #ede5d4;
-  --color-dark-700: #e4d9c4;
-  --color-dark-600: #f5f0e8;
-  --color-dark-500: #ddd0b8;
-  --color-dark-400: #d4c6a8;
-  --color-dark-300: #b8a882;
-  --color-dark-200: #9c8c66;
-  --color-text-primary: #1a2210;
-  --color-text-secondary: #354626;
-  --color-text-muted: #5c6e42;
-  --color-border-default: #b8a882;
-  --color-border-subtle: #d4c6a8;
-  --color-brand-orange: #b83d10;
-  --color-status-active: #2e5c26;
-  --color-status-danger: #8c1c1c;
+  --color-dark-900: #1a1a1a;
+  --color-dark-800: #111111;
+  --color-dark-700: #222222;
+  --color-dark-600: #2a2a2a;
+  --color-dark-500: #333333;
+  --color-dark-400: #3d3d3d;
+  --color-dark-300: #4a4a4a;
+  --color-dark-200: #555555;
+  --color-text-primary:   #f5f5f5;
+  --color-text-secondary: #D4A73B;
+  --color-text-muted:     #8A8A82;
+  --color-border-default: #2a2a2a;
+  --color-border-subtle:  #1f1f1f;
+  --color-brand-orange:   #B3141C;
+  --color-status-active:  #22c55e;
+  --color-status-danger:  #ef4444;
 }
 
 html.light body {

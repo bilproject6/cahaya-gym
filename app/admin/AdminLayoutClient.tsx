@@ -8,9 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import {
   LayoutDashboard, Users, UserCheck,
   TrendingUp, LogOut, Menu, X, ShieldCheck, Package, Activity,
-  Sun, Moon,
 } from "lucide-react";
-import { useTheme } from "@/lib/theme-context";
 
 // Icon bottom nav mobile
 const bottomNavItems = [
@@ -61,7 +59,6 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const supabase = createClient();
-  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -72,21 +69,23 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
     <>
       {/* Logo */}
       <div className="p-5 flex items-center gap-3" style={{ borderBottom: "2px solid var(--color-border-subtle)" }}>
-        <div className="w-9 h-9 flex-shrink-0 flex-shrink-0">
+        <div className="w-9 h-9 flex-shrink-0">
           <Image src="/logo.png" alt="Cahaya Gym" width={36} height={36} className="object-contain" />
         </div>
         <div>
-          <div className="font-bebas text-base leading-none" style={{ color: "var(--color-brand-orange)" }}>CAHAYA</div>
-          <div className="font-bebas text-base leading-none" style={{ color: "var(--color-brand-orange)" }}>GYM</div>
+          <div className="font-barlow" style={{ color: "#fff", fontSize: "1.1rem", fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", lineHeight: 1.1 }}>
+            CAHAYA <span style={{ color: "#B3141C" }}>GYM</span>
+          </div>
+          <div style={{ fontSize: "0.65rem", letterSpacing: "0.15em", color: "#8A8A82", textTransform: "uppercase", fontFamily: "'Barlow Condensed', sans-serif" }}>ADMIN PANEL</div>
         </div>
       </div>
 
       {/* Admin Badge */}
       <div className="px-4 py-4">
-        <div className="flex items-center gap-3 p-3 rounded-xl"
-          style={{ background: "rgba(217,79,30,0.08)", border: "1px solid rgba(217,79,30,0.15)" }}>
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-            style={{ background: "#d94f1e", color: "#f0ead6" }}>
+        <div className="flex items-center gap-3 p-3"
+          style={{ background: "rgba(179,20,28,0.08)", border: "1px solid rgba(179,20,28,0.2)" }}>
+          <div className="w-9 h-9 flex items-center justify-center text-sm font-bold flex-shrink-0"
+            style={{ background: "#B3141C", color: "#fff", fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.05em" }}>
             {profile.nama.charAt(0).toUpperCase()}
           </div>
           <div className="overflow-hidden">
@@ -94,8 +93,8 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
               {profile.nama}
             </div>
             <div className="flex items-center gap-1">
-              <ShieldCheck className="w-3 h-3" style={{ color: "var(--color-brand-orange)" }} />
-              <span className="text-xs" style={{ color: "var(--color-brand-orange)" }}>Admin</span>
+              <ShieldCheck className="w-3 h-3" style={{ color: "#B3141C" }} />
+              <span className="text-xs" style={{ color: "#B3141C", fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.1em", textTransform: "uppercase" }}>Admin</span>
             </div>
           </div>
         </div>
@@ -124,20 +123,8 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
         ))}
       </nav>
 
-      {/* Logout + Theme toggle */}
+      {/* Logout */}
       <div className="p-4" style={{ borderTop: "1px solid var(--color-border-subtle)" }}>
-        <button
-          onClick={toggleTheme}
-          className="sidebar-nav-item w-full mb-2"
-          title={theme === "dark" ? "Aktifkan Light Mode" : "Aktifkan Dark Mode"}
-        >
-          {theme === "dark"
-            ? <Sun className="w-4 h-4" style={{ color: "var(--color-brand-gold)" }} />
-            : <Moon className="w-4 h-4" style={{ color: "var(--color-brand-orange)" }} />}
-          <span style={{ color: "var(--color-text-secondary)" }}>
-            {theme === "dark" ? "Light Mode" : "Dark Mode"}
-          </span>
-        </button>
         <button
           onClick={handleLogout}
           className="sidebar-nav-item w-full"
@@ -178,21 +165,16 @@ export default function AdminLayoutClient({ children, profile }: AdminLayoutClie
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile topbar — minimal, hanya untuk menu + logo */}
+        {/* Mobile topbar */}
         <header className="lg:hidden flex items-center justify-between px-4 py-3 sticky top-0 z-40"
-          style={{ background: "var(--color-dark-900)", borderBottom: "2px solid var(--color-border-subtle)" }}>
+          style={{ background: "var(--color-dark-900)", borderBottom: "2px solid #B3141C" }}>
           <button onClick={() => setSidebarOpen(true)} style={{ color: "var(--color-text-primary)" }}>
             <Menu className="w-5 h-5" />
           </button>
-          <span className="font-bebas text-lg" style={{ color: "var(--color-text-primary)" }}>ADMIN PANEL</span>
-          <div className="flex items-center gap-2">
-            <button onClick={toggleTheme} className="p-1.5 rounded-lg" style={{ color: "var(--color-text-muted)" }}>
-              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-              style={{ background: "var(--color-brand-orange)", color: "white" }}>
-              {profile.nama.charAt(0).toUpperCase()}
-            </div>
+          <span className="font-barlow" style={{ color: "#fff", fontSize: "1rem", fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase" }}>ADMIN PANEL</span>
+          <div className="w-8 h-8 flex items-center justify-center text-xs font-bold"
+            style={{ background: "#B3141C", color: "white", fontFamily: "'Barlow Condensed', sans-serif" }}>
+            {profile.nama.charAt(0).toUpperCase()}
           </div>
         </header>
 
